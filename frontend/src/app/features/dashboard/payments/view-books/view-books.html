@@ -1,0 +1,435 @@
+<!-- ================= STUDENT DETAILS ================= -->
+<section class="section">
+  <div><strong>Student ID:</strong> {{ selectedStudent?.student_id }}</div>
+  <div><strong>First Name:</strong> {{ selectedStudent?.student_name }}</div>
+  <div><strong>Last Name:</strong> {{ selectedStudent?.sur_name }}</div>
+  <div><strong>Section:</strong> {{ selectedStudent?.section }}</div>
+</section>
+
+<!-- ================= ACADEMIC DETAILS ================= -->
+<section class="section">
+  <h3>Academic Details</h3>
+  <div><strong>Academic Year ID:</strong> {{ selectedAcademicYear?.academicYearId }}</div>
+  <div><strong>Academic Year:</strong> {{ selectedAcademicYear?.yearLabel }}</div>
+  <div><strong>Start Date:</strong> {{ selectedAcademicYear?.startDate }}</div>
+  <div><strong>End Date:</strong> {{ selectedAcademicYear?.endDate }}</div>
+  <div><strong>Current Year:</strong> {{ selectedAcademicYear?.isCurrentYear ? 'Yes' : 'No' }}</div>
+  <div><strong>Connected:</strong> {{ selectedAcademicYear?.isConnected ? 'Yes' : 'No' }}</div>
+</section>
+
+<!-- ================= CLASS DETAILS ================= -->
+<section class="section">
+  <h3>Class Details</h3>
+  <div><strong>Class ID:</strong> {{ selectedClass?.classId }}</div>
+  <div><strong>Class Name:</strong> {{ selectedClass?.className }}</div>
+  <div><strong>Fee Amount:</strong> {{ selectedClass?.feeAmount }}</div>
+</section>
+
+
+<div class="books-transaction">
+  <header class="header">
+    <h2>Books Payment</h2>
+    <!-- FIX: selectedStudent.name doesn't exist on the Student model; the
+         field is student_name. -->
+    <p *ngIf="selectedStudent">
+      Student: <strong>{{ selectedStudent?.student_name }} {{ selectedStudent?.sur_name }}</strong>
+      <span *ngIf="selectedAcademicYear"> | Year: {{ selectedAcademicYear.yearLabel }}</span>
+    </p>
+  </header>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+
+    <div class="meta-row">
+      <label>
+        Payment Method
+        <select formControlName="payment_method">
+          <option *ngFor="let m of paymentMethods" [value]="m">{{ m }}</option>
+        </select>
+      </label>
+
+      <label>
+        Transaction ID (optional)
+        <input type="text" formControlName="transaction_id" />
+      </label>
+
+      <label>
+        Payment Date (optional)
+        <input type="date" formControlName="payment_date" />
+      </label>
+    </div>
+
+    <table class="rows-table" formArrayName="rows">
+      <thead>
+        <tr>
+          <th>Book</th>
+          <th>Amount</th>
+          <th>Paid</th>
+          <th>Discount</th>
+          <th>Received</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of rows.controls; let i = index" [formGroupName]="i">
+          <td>
+            <select formControlName="book_id" (change)="onBookSelected(i)">
+              <option [ngValue]="null" disabled>Select book</option>
+              <option *ngFor="let book of books" [ngValue]="book.bookId">
+                {{ book.bookType }}
+              </option>
+            </select>
+          </td>
+          <td>
+            <input type="number" formControlName="books_amount" readonly />
+          </td>
+          <td>
+            <input type="number" formControlName="books_paid" min="0" />
+          </td>
+          <td>
+            <input type="number" formControlName="books_discount" min="0" />
+          </td>
+          <td class="center">
+            <input type="checkbox" formControlName="received" />
+          </td>
+          <td>
+            <button
+              type="button"
+              (click)="removeRow(i)"
+              [disabled]="rows.length === 1"
+            >
+              Remove
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <button type="button" class="add-row" (click)="addRow()">+ Add Book</button>
+
+    <div class="total-row">
+      <strong>Total Paid: {{ totalPaid | number: '1.2-2' }}</strong>
+    </div>
+
+    <p class="error" *ngIf="submitError">{{ submitError }}</p>
+
+    <button type="submit" class="submit-btn" [disabled]="submitting">
+      {{ submitting ? 'Submitting...' : 'Submit Payment' }}
+    </button>
+    <!-- ================= PRINT INVOICE BUTTON ================= -->
+    <div class="invoice-actions">
+      <button
+        type="button"
+        class="print-btn"
+        (click)="printInvoice()"
+        [disabled]="!historyBooks.length"
+      >
+        🖨 Print Invoice
+      </button>
+    </div>
+  </form>
+
+  <!-- ================= BOOK PAYMENT HISTORY =================
+       FIX: getTransactionsWithBooksByPaymentId existed on the service
+       but nothing rendered it. This shows cumulative book balances
+       per book_id plus the raw transaction log, with reverse /
+       mark-received actions. -->
+  <section class="history-section">
+    <h3>Book Payment Status</h3>
+
+    <p *ngIf="historyError" class="error">{{ historyError }}</p>
+
+    <table class="rows-table" *ngIf="!historyLoading; else loadingHistory">
+      <thead>
+        <tr>
+          <th>Book</th>
+          <th>Amount</th>
+          <th>Paid</th>
+          <th>Discount</th>
+          <th>Pending</th>
+          <th>Status</th>
+          <th>Received</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let book of historyBooks">
+          <td>{{ book.book_type }}</td>
+          <td>{{ book.books_amount | number: '1.2-2' }}</td>
+          <td>{{ book.books_paid | number: '1.2-2' }}</td>
+          <td>{{ book.books_discount | number: '1.2-2' }}</td>
+          <td>{{ book.books_pending_amount | number: '1.2-2' }}</td>
+          <td>{{ book.books_payment_status }}</td>
+          <td class="center">
+            <input
+              type="checkbox"
+              [checked]="book.received"
+              [disabled]="togglingBookId === book.book_id"
+              (change)="toggleReceived(book)"
+            />
+          </td>
+          <td>
+            <button
+              type="button"
+              [disabled]="reversingBookId === book.book_id"
+              (click)="reverseBook(book)"
+            >
+              {{ reversingBookId === book.book_id ? 'Reversing...' : 'Reverse' }}
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="historyBooks.length === 0">
+          <td colspan="8" class="center">No book payments yet.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ng-template #loadingHistory>
+      <div>Loading book payment status...</div>
+    </ng-template>
+
+    <h4>Transactions</h4>
+    <table class="rows-table">
+      <thead>
+        <tr>
+          <th>Transaction ID</th>
+          <th>Method</th>
+          <th>Amount</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let tx of historyTransactions">
+          <td>{{ tx.transaction_id }}</td>
+          <td class="text-capitalize">{{ tx.payment_method }}</td>
+          <td>{{ tx.amount_paid | number: '1.2-2' }}</td>
+          <td>{{ tx.payment_date | date:'medium' }}</td>
+        </tr>
+        <tr *ngIf="historyTransactions.length === 0">
+          <td colspan="4" class="center">No transactions yet.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ================= INVOICE BLOCK =================
+       FIX: previously called `.reduce((sum, book) => ...)` directly in
+       template bindings for Total Paid / Discount / Pending. Angular's
+       template expression parser does not support arrow functions, so
+       this would fail to compile. Replaced with component getters
+       (invoiceTotalPaid / invoiceTotalDiscount / invoiceTotalPending). -->
+  <section
+    class="invoice"
+    id="invoice"
+    *ngIf="showInvoice"
+  >
+
+    <!-- Invoice Header -->
+    <div class="invoice-header">
+      <h1>Books Payment Invoice</h1>
+
+      <div class="invoice-meta">
+        <div>
+          <strong>Student ID:</strong>
+          {{ selectedStudent?.student_id }}
+        </div>
+
+        <div>
+          <strong>Student Name:</strong>
+          {{ selectedStudent?.student_name }}
+          {{ selectedStudent?.sur_name }}
+        </div>
+
+        <div>
+          <strong>Section:</strong>
+          {{ selectedStudent?.section }}
+        </div>
+
+        <div>
+          <strong>Academic Year:</strong>
+          {{ selectedAcademicYear?.yearLabel }}
+        </div>
+
+        <div>
+          <strong>Class:</strong>
+          {{ selectedClass?.className }}
+        </div>
+
+        <div>
+          <strong>Invoice Date:</strong>
+          {{ today | date:'mediumDate' }}
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Book Payment Summary -->
+    <div class="invoice-section">
+
+      <h3>Book Payment Summary</h3>
+
+      <table class="invoice-table">
+
+        <thead>
+          <tr>
+            <th>Book</th>
+            <th>Amount</th>
+            <th>Paid</th>
+            <th>Discount</th>
+            <th>Pending</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+
+        <tbody>
+
+          <tr *ngFor="let book of historyBooks">
+
+            <td>
+              {{ book.book_type }}
+            </td>
+
+            <td>
+              {{ book.books_amount | number:'1.2-2' }}
+            </td>
+
+            <td>
+              {{ book.books_paid | number:'1.2-2' }}
+            </td>
+
+            <td>
+              {{ book.books_discount | number:'1.2-2' }}
+            </td>
+
+            <td>
+              {{ book.books_pending_amount | number:'1.2-2' }}
+            </td>
+
+            <td>
+              {{ book.books_payment_status }}
+            </td>
+
+          </tr>
+
+
+          <tr *ngIf="historyBooks.length === 0">
+            <td colspan="6" class="center">
+              No books payment found
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+
+    <!-- Total Summary -->
+    <div class="invoice-summary">
+
+      <div>
+        <strong>Total Paid:</strong>
+        {{ invoiceTotalPaid | number:'1.2-2' }}
+      </div>
+
+      <div>
+        <strong>Total Discount:</strong>
+        {{ invoiceTotalDiscount | number:'1.2-2' }}
+      </div>
+
+      <div>
+        <strong>Total Pending:</strong>
+        {{ invoiceTotalPending | number:'1.2-2' }}
+      </div>
+
+    </div>
+
+
+
+
+    <!-- Latest Transactions -->
+    <div class="invoice-section">
+
+      <h3>Recent Transactions</h3>
+
+
+      <table class="invoice-table">
+
+        <thead>
+          <tr>
+            <th>Transaction ID</th>
+            <th>Payment Method</th>
+            <th>Amount</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+
+
+        <tbody>
+
+
+          <tr
+            *ngFor="
+              let tx of historyTransactions
+              | slice:0:5
+            "
+          >
+
+            <td>
+              {{ tx.transaction_id || '-' }}
+            </td>
+
+
+            <td>
+              {{ tx.payment_method | titlecase }}
+            </td>
+
+
+            <td>
+              {{ tx.amount_paid | number:'1.2-2' }}
+            </td>
+
+
+            <td>
+              {{ tx.payment_date | date:'medium' }}
+            </td>
+
+          </tr>
+
+
+          <tr *ngIf="historyTransactions.length === 0">
+
+            <td colspan="4" class="center">
+              No transactions available
+            </td>
+
+          </tr>
+
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+
+
+    <!-- Footer -->
+    <div class="invoice-footer">
+
+      <p>
+        This is a computer generated invoice.
+      </p>
+
+      <p>
+        Thank you.
+      </p>
+
+    </div>
+
+
+  </section>
+</div>

@@ -1,0 +1,264 @@
+<div class="audit-wrapper">
+
+  <!-- HEADER -->
+
+  <div class="audit-header">
+    <h2>Audit Logs</h2>
+    <p class="subtitle">
+      View user activity and audit history
+    </p>
+  </div>
+
+  <!-- USER SELECTION -->
+
+  <div class="user-selector-card">
+
+```
+<label for="userSelect">
+  Select User
+</label>
+
+@if (usersLoading) {
+
+  <div class="state loading">
+    Loading users...
+  </div>
+
+} @else if (usersError) {
+
+  <div class="state error">
+    {{ usersError }}
+  </div>
+
+} @else {
+
+  <select
+    id="userSelect"
+    [value]="selectedUserId"
+    (change)="onUserSelected($event)"
+  >
+
+    <option value="">
+      -- Select User --
+    </option>
+
+    @for (user of users; track user.user_id) {
+
+      <option [value]="user.user_id">
+
+        {{ user.first_name }}
+        {{ user.last_name }}
+        ({{ user.username }})
+
+      </option>
+
+    }
+
+  </select>
+
+}
+```
+
+  </div>
+
+  <!-- SELECTED USER DETAILS -->
+
+@if (selectedUser) {
+
+```
+<div class="selected-user-card">
+
+  <h3>
+    Selected User
+  </h3>
+
+  <div class="user-details">
+
+    <span>
+      <strong>Name:</strong>
+      {{ selectedUser.first_name }}
+      {{ selectedUser.last_name }}
+    </span>
+
+    <span>
+      <strong>Username:</strong>
+      {{ selectedUser.username }}
+    </span>
+
+    <span>
+      <strong>Role:</strong>
+      {{ selectedUser.role }}
+    </span>
+
+    <span>
+      <strong>Phone:</strong>
+      {{ selectedUser.phone }}
+    </span>
+
+  </div>
+
+</div>
+```
+
+}
+
+  <!-- AUDIT LOG LOADING -->
+
+@if (loading) {
+
+```
+<div class="state loading">
+  Loading audit logs...
+</div>
+```
+
+}
+
+  <!-- ERROR -->
+
+@if (error) {
+
+```
+<div class="state error">
+  {{ error }}
+</div>
+```
+
+}
+
+  <!-- EMPTY -->
+
+@if (!loading && !error && selectedUserId && auditLogs.length === 0) {
+
+```
+<div class="state empty">
+  No audit logs found for this user
+</div>
+```
+
+}
+
+  <!-- NO USER SELECTED -->
+
+@if (!loading && !selectedUserId) {
+
+```
+<div class="state empty">
+  Please select a user to view audit logs
+</div>
+```
+
+}
+
+  <!-- AUDIT LOG LIST -->
+
+@if (!loading && auditLogs.length > 0) {
+
+```
+<div class="audit-grid">
+
+
+  @for (log of auditLogs; track trackByLogId($index, log)) {
+
+
+    <div class="audit-card">
+
+
+      <!-- TOP -->
+
+      <div class="card-top">
+
+
+        <div class="action">
+          {{ log.action }}
+        </div>
+
+
+        <span
+          class="severity"
+          [class.info]="log.severity === 'info'"
+          [class.warning]="log.severity === 'warning'"
+          [class.critical]="log.severity === 'critical'"
+        >
+
+          {{ log.severity }}
+
+        </span>
+
+
+      </div>
+
+
+
+      <!-- MESSAGE -->
+
+      <p class="message">
+        {{ log.log_message }}
+      </p>
+
+
+
+      <!-- META -->
+
+      <div class="meta">
+
+
+        <span class="category">
+          {{ log.category }}
+        </span>
+
+
+        <span class="dot">
+          •
+        </span>
+
+
+        <span class="timestamp">
+          {{ log.timestamp | date:'medium' }}
+        </span>
+
+
+      </div>
+
+
+
+      <!-- STATUS -->
+
+      <div
+        class="status"
+        [class.success]="log.success"
+        [class.failed]="!log.success"
+      >
+
+        {{ log.success ? 'Success' : 'Failed' }}
+
+      </div>
+
+
+    </div>
+
+
+  }
+
+
+</div>
+```
+
+}
+
+  <!-- FUTURE FILTER UI -->
+
+  <!--
+
+    Future Improvements:
+
+    - Search users
+    - Filter audit logs by severity
+    - Filter by category
+    - Pagination
+    - Date range filtering
+    - Export audit report
+
+  -->
+
+</div>

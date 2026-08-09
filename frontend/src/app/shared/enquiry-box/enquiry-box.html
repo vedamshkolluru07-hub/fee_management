@@ -1,0 +1,50 @@
+<div class="enquiry-box">
+  <h3 class="enquiry-title">Have a question?</h3>
+  <p class="enquiry-subtitle">Send us a quick message and we'll get back to you.</p>
+
+  <!-- SUCCESS STATE -->
+  <div *ngIf="submitted()" class="enquiry-success">
+    <p>✅ Thank you! Your enquiry has been received.</p>
+    <button type="button" class="btn-secondary" (click)="resetForm()">Send another</button>
+  </div>
+
+  <!-- FORM -->
+  <form *ngIf="!submitted()" (ngSubmit)="submit()" class="enquiry-form">
+    <div class="field">
+      <label for="enquiry-type">Enquiry type</label>
+      <select id="enquiry-type" name="enquiryType" [(ngModel)]="enquiryTypeId" required>
+        <option *ngFor="let t of types()" [ngValue]="t.id">{{ t.label }}</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="enquiry-phone">Phone number</label>
+      <input
+        id="enquiry-phone"
+        name="phone"
+        type="tel"
+        [(ngModel)]="phone"
+        placeholder="e.g. 9876543210"
+        required
+      />
+    </div>
+
+    <div class="field">
+      <label for="enquiry-message">Message</label>
+      <textarea
+        id="enquiry-message"
+        name="message"
+        rows="4"
+        [(ngModel)]="message"
+        placeholder="Tell us how we can help..."
+        required
+      ></textarea>
+    </div>
+
+    <div *ngIf="errorMessage()" class="enquiry-error">{{ errorMessage() }}</div>
+
+    <button type="submit" class="btn-primary" [disabled]="submitting()">
+      {{ submitting() ? 'Sending...' : 'Send enquiry' }}
+    </button>
+  </form>
+</div>

@@ -1,0 +1,10 @@
+/* src/app/features/auth/login/login.css */
+/* Card shell, alerts, and field errors are now handled by the shared
+   .auth-card / .alert / .field-error classes in styles.css — this file
+   only holds what's actually specific to the login form. */
+
+:host {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}

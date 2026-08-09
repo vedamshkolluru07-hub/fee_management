@@ -1,0 +1,112 @@
+<div class="login-wrapper">
+
+  <!-- HEADER -->
+  <div class="login-header">
+
+    <h2>Login Attempts</h2>
+
+    <button class="btn btn-secondary" (click)="refresh()">
+      Refresh
+    </button>
+
+  </div>
+
+  <!-- LOADING -->
+  @if (loading()) {
+    <div class="state loading">
+      Loading login attempts...
+    </div>
+  }
+
+  <!-- ERROR -->
+  @if (error()) {
+    <div class="state error">
+      {{ error() }}
+    </div>
+  }
+
+  <!-- EMPTY -->
+  @if (!loading() && loginAttempts().length === 0) {
+    <div class="state empty">
+      No login attempts found.
+    </div>
+  }
+
+  <!-- LIST -->
+  @if (loginAttempts().length > 0) {
+
+    <div class="attempts-grid">
+
+      @for (
+        attempt of loginAttempts();
+        track trackByAttemptId($index, attempt)
+      ) {
+
+        <div class="attempt-card">
+
+          <!-- STATUS -->
+          <div class="card-top">
+
+            <h3>
+              Login Attempt
+            </h3>
+
+            <span
+              class="status-badge"
+              [class.success]="attempt.success"
+              [class.failed]="!attempt.success"
+            >
+              {{ attempt.success ? 'Success' : 'Failed' }}
+            </span>
+
+          </div>
+
+          <!-- DETAILS -->
+          <div class="details">
+
+            <div class="row">
+              <span class="label">IP Address</span>
+              <span>{{ attempt.ip_address || 'N/A' }}</span>
+            </div>
+
+            <div class="row">
+              <span class="label">Device</span>
+              <span class="device">
+                {{ attempt.user_agent || 'Unknown' }}
+              </span>
+            </div>
+
+            <div class="row">
+              <span class="label">Time</span>
+              <span>
+                {{ attempt.attempted_at | date:'medium' }}
+              </span>
+            </div>
+
+            @if (attempt.device_info) {
+              <div class="row column">
+                <span class="label">Device Info</span>
+                <pre class="device-info">
+{{ attempt.device_info | json }}
+                </pre>
+              </div>
+            }
+
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <button class="btn btn-primary" (click)="loadMore()">
+        Load More
+      </button>
+    </div>
+
+  }
+
+</div>

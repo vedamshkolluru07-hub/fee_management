@@ -1,0 +1,22 @@
+<div class="public-shell">
+  <header class="public-header">
+    <div class="public-header-inner">
+      <a routerLink="/" class="public-brand">
+        <img src="assets/header/header.png" alt="SS Model High School Logo" class="public-brand-logo" />
+        <span class="public-brand-name">SS Model High School</span>
+      </a>
+
+      <nav class="public-nav">
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+        <a routerLink="/about" routerLinkActive="active">About</a>
+        <a routerLink="/login" class="public-login-btn">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="public-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <app-connect-widget></app-connect-widget>
+</div>

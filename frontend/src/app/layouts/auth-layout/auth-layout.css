@@ -1,0 +1,25 @@
+/* src/app/layouts/auth-layout/auth-layout.css */
+
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--auth-bg);
+  padding: 20px;
+  transition: background 0.25s ease;
+
+  /* Previously fixed-height centering could clip a tall form (e.g.
+     register-admin) on short viewports with no way to scroll to the
+     submit button. */
+  overflow-y: auto;
+}
+
+.auth-container > * {
+  animation: authFadeIn 0.35s ease both;
+}
+
+@keyframes authFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

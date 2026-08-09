@@ -1,0 +1,359 @@
+<div class="bulk-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h2>Bulk Student Enrollment</h2>
+      <p>Upload Excel/CSV files or manually add student records.</p>
+    </div>
+  </div>
+
+  <form #bulkForm="ngForm" novalidate>
+
+    <!-- ================= ACADEMIC YEAR ================= -->
+    <fieldset class="form-section">
+      <legend>Academic Year</legend>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="academic_year_id">Academic Year *</label>
+          <select
+            id="academic_year_id"
+            name="academic_year_id"
+            [(ngModel)]="selectedAcademicYearId"
+            (change)="onAcademicYearChange()"
+            [disabled]="loading"
+            required>
+            <option [ngValue]="null" disabled>Select Academic Year</option>
+            <option *ngFor="let year of academicYears; trackBy: trackByYearId"
+                    [ngValue]="year.academicYearId">
+              {{ year.yearLabel }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group year-info" *ngIf="selectedYear">
+          <label id="year-status-label">Academic Year Status</label>
+          <div class="year-status" aria-labelledby="year-status-label">
+            {{ selectedYear.isCurrentYear ? '🟢 Current Year' : '🔴 Previous Year' }}
+          </div>
+          <small>
+            {{ selectedYear.startDate | date:'dd MMM yyyy' }}
+            -
+            {{ selectedYear.endDate | date:'dd MMM yyyy' }}
+          </small>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- ================= UPLOAD SECTION ================= -->
+    <div class="upload-card">
+      <div class="upload-controls">
+        <label class="file-upload" for="bulk-file-input">
+          <input
+            id="bulk-file-input"
+            type="file"
+            name="bulk_file"
+            accept=".xlsx,.xls,.csv"
+            (change)="onFileSelected($event)"
+            [disabled]="loading" />
+          <span>📁 Choose File</span>
+        </label>
+
+        <button
+          class="btn btn-primary"
+          type="button"
+          (click)="uploadFile()"
+          [disabled]="!selectedFile || loading"
+          aria-label="Upload selected file">
+          ⬆ Upload File
+        </button>
+
+        <div class="add-student-group">
+          <label for="student_count" class="sr-only">Number of Students</label>
+          <input
+            id="student_count"
+            type="number"
+            name="student_count"
+            min="1"
+            step="1"
+            [(ngModel)]="studentCount"
+            placeholder="No. of Students"
+            [disabled]="loading">
+
+          <button
+            class="btn btn-success"
+            type="button"
+            (click)="addRows(studentCount)"
+            [disabled]="loading || !studentCount || studentCount < 1 || !selectedAcademicYearId"
+            aria-label="Add student rows">
+            ➕ Add Students
+          </button>
+        </div>
+      </div>
+
+      <p class="hint" *ngIf="!selectedAcademicYearId">
+        Select an academic year above before adding student rows.
+      </p>
+    </div>
+
+    <!-- ================= TABLE ================= -->
+    <div class="table-card" *ngIf="students && students.length > 0">
+      <div class="table-header">
+        <h3>Student Records</h3>
+        <span>Total Records: {{ students.length }}</span>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="student-table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Student ID *</th>
+              <th scope="col">Student Name *</th>
+              <th scope="col">DOB *</th>
+              <th scope="col">Gender *</th>
+              <th scope="col">Section</th>
+              <th scope="col">Class *</th>
+              <th scope="col">Academic Year</th>
+              <th scope="col">Email ID *</th>
+              <th scope="col">Admission Date *</th>
+              <th scope="col">Status *</th>
+              <th scope="col">Contact Number *</th>
+              <th scope="col">Secondary Contact</th>
+              <th scope="col">Father First Name *</th>
+              <th scope="col">Father Sur Name *</th>
+              <th scope="col">Mother First Name</th>
+              <th scope="col">Mother Sur Name</th>
+              <th scope="col">Parent Email</th>
+              <th scope="col">Address</th>
+              <th scope="col">Occupation</th>
+              <th scope="col">Relationship *</th>
+              <th scope="col">Concession</th>
+              <th scope="col">Amount Paid *</th>
+              <th scope="col">Payment Method *</th>
+              <th scope="col">Due Date</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of students; let i = index; trackBy: trackByIndex">
+              <td>{{ i + 1 }}</td>
+
+              <td>
+                <label class="sr-only" [for]="'student_id_' + i">Student ID</label>
+                <input type="text" [id]="'student_id_' + i"
+                  [(ngModel)]="row.student_id" [name]="'student_id_' + i"
+                  placeholder="Student ID" required>
+              </td>
+
+              <td>
+                <label class="sr-only" [for]="'student_name_' + i">Student Name</label>
+                <input type="text" [id]="'student_name_' + i"
+                  [(ngModel)]="row.student_name" [name]="'student_name_' + i"
+                  placeholder="Student Name" required>
+              </td>
+
+              <td>
+                <label class="sr-only" [for]="'dob_' + i">Date of Birth</label>
+                <input type="date" [id]="'dob_' + i"
+                  [(ngModel)]="row.dob" [name]="'dob_' + i" required>
+              </td>
+
+              <td>
+                <label class="sr-only" [for]="'gender_' + i">Gender</label>
+                <select [id]="'gender_' + i" [(ngModel)]="row.gender"
+                  [name]="'gender_' + i" required>
+                  <option value="" disabled selected>Select</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </td>
+
+              <td>
+                <label class="sr-only" [for]="'section_' + i">Section</label>
+                <select [id]="'section_' + i" [(ngModel)]="row.section"
+                  [name]="'section_' + i">
+                  <option value="" disabled selected>Select</option>
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                </select>
+              </td>
+
+              <td>
+                <label class="sr-only" [for]="'class_id_' + i">Class</label>
+                <select [id]="'class_id_' + i" [(ngModel)]="row.class_id"
+                  [name]="'class_id_' + i" [disabled]="!filteredClasses.length" required>
+                  <option [ngValue]="null" disabled selected>Select Class</option>
+                  <option *ngFor="let cls of filteredClasses; trackBy: trackByClassId"
+                    [ngValue]="cls.classId">
+                    {{ cls.className }}
+                  </option>
+                </select>
+              </td>
+
+              <td>{{ selectedYear?.yearLabel || '-' }}</td>
+
+              <td>
+                <label class="sr-only" [for]="'email_id_' + i">Email ID</label>
+                <input type="email" [id]="'email_id_' + i"
+                  [(ngModel)]="row.email_id" [name]="'email_id_' + i"
+                  placeholder="Student Email" required>
+              </td>
+
+              <td>
+                <label class="sr-only" [for]="'admission_date_' + i">Admission Date</label>
+                <input type="date" [id]="'admission_date_' + i"
+                  [(ngModel)]="row.admission_date" [name]="'admission_date_' + i" required>
+              </td>
+
+              <td>
+                <label class="sr-only" [for]="'status_' + i">Status</label>
+                <select [id]="'status_' + i" [(ngModel)]="row.status"
+                  [name]="'status_' + i" required>
+                  <option value="" disabled selected>Select</option>
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                </select>
+              </td>
+
+              <td>
+                <label class="sr-only" [for]="'contact_number_' + i">Contact Number</label>
+                <input type="tel" [id]="'contact_number_' + i"
+                  [(ngModel)]="row.contact_number" [name]="'contact_number_' + i"
+                  placeholder="Contact" pattern="[0-9]{10}" maxlength="10" required>
+              </td>
+
+              <td>
+                <label class="sr-only" [for]="'secondary_contact_number_' + i">Secondary Contact</label>
+                <input type="tel" [id]="'secondary_contact_number_' + i"
+                  [(ngModel)]="row.secondary_contact_number" [name]="'secondary_contact_number_' + i"
+                  placeholder="Secondary Contact" pattern="[0-9]{10}" maxlength="10">
+              </td>
+
+              <td>
+                <label class="sr-only" [for]="'fathers_first_name_' + i">Father First Name</label>
+                <input type="text" [id]="'fathers_first_name_' + i"
+                  [(ngModel)]="row.fathers_first_name" [name]="'fathers_first_name_' + i"
+                  placeholder="Father First Name" required>
+              </td>
+
+              <td>
+                <label class="sr-only" [for]="'fathers_sur_name_' + i">Father Sur Name</label>
+                <input type="text" [id]="'fathers_sur_name_' + i"
+                  [(ngModel)]="row.fathers_sur_name" [name]="'fathers_sur_name_' + i"
+                  placeholder="Father Sur Name" required>
+              </td>
+
+              <td>
+                <label class="sr-only" [for]="'mothers_first_name_' + i">Mother First Name</label>
+                <input type="text" [id]="'mothers_first_name_' + i"
+                  [(ngModel)]="row.mothers_first_name" [name]="'mothers_first_name_' + i"
+                  placeholder="Mother First Name">
+              </td>
+
+              <td>
+                <label class="sr-only" [for]="'mothers_sur_name_' + i">Mother Sur Name</label>
+                <input type="text" [id]="'mothers_sur_name_' + i"
+                  [(ngModel)]="row.mothers_sur_name" [name]="'mothers_sur_name_' + i"
+                  placeholder="Mother Sur Name">
+              </td>
+
+              <td>
+                <label class="sr-only" [for]="'email_' + i">Parent Email</label>
+                <input type="email" [id]="'email_' + i"
+                  [(ngModel)]="row.email" [name]="'email_' + i"
+                  placeholder="Parent Email">
+              </td>
+
+              <td>
+                <label class="sr-only" [for]="'address_' + i">Address</label>
+                <input type="text" [id]="'address_' + i"
+                  [(ngModel)]="row.address" [name]="'address_' + i"
+                  placeholder="Address">
+              </td>
+
+              <td>
+                <label class="sr-only" [for]="'occupation_' + i">Occupation</label>
+                <input type="text" [id]="'occupation_' + i"
+                  [(ngModel)]="row.occupation" [name]="'occupation_' + i"
+                  placeholder="Occupation">
+              </td>
+
+              <td>
+                <label class="sr-only" [for]="'relationship_' + i">Relationship</label>
+                <select [id]="'relationship_' + i" [(ngModel)]="row.relationship"
+                  [name]="'relationship_' + i" required>
+                  <option value="" disabled selected>Select</option>
+                  <option value="Father">Father</option>
+                  <option value="Mother">Mother</option>
+                  <option value="Guardian">Guardian</option>
+                </select>
+              </td>
+
+              <td>
+                <label class="sr-only" [for]="'concession_' + i">Concession</label>
+                <input type="number" [id]="'concession_' + i"
+                  [(ngModel)]="row.concession" [name]="'concession_' + i"
+                  min="0" step="0.01">
+              </td>
+
+              <td>
+                <label class="sr-only" [for]="'amount_paid_' + i">Amount Paid</label>
+                <input type="number" [id]="'amount_paid_' + i"
+                  [(ngModel)]="row.amount_paid" [name]="'amount_paid_' + i"
+                  min="0" step="0.01" required>
+              </td>
+
+              <td>
+                <label class="sr-only" [for]="'payment_method_' + i">Payment Method</label>
+                <select [id]="'payment_method_' + i" [(ngModel)]="row.payment_method"
+                  [name]="'payment_method_' + i" required>
+                  <option value="" disabled selected>Select</option>
+                  <option value="cash">Cash</option>
+                  <option value="card">Card</option>
+                  <option value="online">Online</option>
+                </select>
+              </td>
+
+              <td>
+                <label class="sr-only" [for]="'due_date_' + i">Due Date</label>
+                <input type="date" [id]="'due_date_' + i"
+                  [(ngModel)]="row.due_date" [name]="'due_date_' + i">
+              </td>
+
+              <td>
+                <button class="delete-btn" type="button" (click)="removeRow(i)"
+                  aria-label="Remove row {{ i + 1 }}">
+                  ✕
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ================= ACTIONS ================= -->
+    <div class="action-section">
+      <button
+        class="btn btn-submit"
+        type="button"
+        (click)="submitBulk()"
+        [disabled]="loading || students.length === 0 || bulkForm.invalid"
+        aria-label="Submit bulk enrollment">
+        🚀 Submit Bulk Enrollment
+      </button>
+    </div>
+
+  </form>
+
+  <!-- ================= STATUS ================= -->
+  <div class="status loading" *ngIf="loading" role="status" aria-live="polite">
+    ⏳ Uploading student records...
+  </div>
+
+  <div class="status" [class.success]="isSuccess" [class.error]="!isSuccess"
+       *ngIf="message && !loading" role="status" aria-live="polite">
+    {{ message }}
+  </div>
+</div>

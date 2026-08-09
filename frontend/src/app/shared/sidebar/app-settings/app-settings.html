@@ -1,0 +1,108 @@
+<div class="settings-page">
+
+  <!-- HEADER -->
+  <header class="page-header">
+    <h2>App Settings</h2>
+    <p>Manage system limits and access restrictions</p>
+  </header>
+
+  <!-- STATES -->
+  <div *ngIf="loading()" class="state loading">
+    Loading settings...
+  </div>
+
+  <div *ngIf="message()" class="state message">
+    {{ message() }}
+  </div>
+
+  <!-- SETTINGS GRID -->
+  <div class="settings-grid">
+
+    <!-- USER CARD -->
+    <section class="card">
+      <h3>User Settings</h3>
+
+      <div class="settings-row">
+
+        <!-- LEFT BLOCK -->
+        <div class="block">
+          <label>User Limit</label>
+          <div class="control">
+            <input
+              type="number"
+              [value]="userLimit()"
+              (input)="userLimit.set(+$any($event.target).value)"
+            />
+            <button class="btn small primary" (click)="updateUserLimit()">
+              Save
+            </button>
+          </div>
+        </div>
+
+        <!-- RIGHT BLOCK -->
+        <div class="block">
+          <label>Restrict Users</label>
+          <div class="control">
+            <label class="switch">
+              <input
+                type="checkbox"
+                [checked]="restrictUser()"
+                (change)="restrictUser.set($any($event.target).checked)"
+              />
+              <span class="slider"></span>
+            </label>
+
+            <button class="btn small" (click)="toggleUserRestriction()">
+              Apply
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ADMIN CARD -->
+    <section class="card">
+      <h3>Admin Settings</h3>
+
+      <div class="settings-row">
+
+        <!-- LEFT BLOCK -->
+        <div class="block">
+          <label>Admin Limit</label>
+          <div class="control">
+            <input
+              type="number"
+              [value]="adminLimit()"
+              (input)="adminLimit.set(+$any($event.target).value)"
+            />
+            <button class="btn small primary" (click)="updateAdminLimit()">
+              Save
+            </button>
+          </div>
+        </div>
+
+        <!-- RIGHT BLOCK -->
+        <div class="block">
+          <label>Restrict Admins</label>
+          <div class="control">
+            <label class="switch">
+              <input
+                type="checkbox"
+                [checked]="restrictAdmin()"
+                (change)="restrictAdmin.set($any($event.target).checked)"
+              />
+              <span class="slider"></span>
+            </label>
+
+            <button class="btn small" (click)="toggleAdminRestriction()">
+              Apply
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+</div>

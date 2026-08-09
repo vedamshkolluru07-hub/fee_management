@@ -1,0 +1,37 @@
+<!-- src/app/shared/sidebar/sidebar.html -->
+
+<!-- Mobile backdrop: click outside to close (hidden when pinned or closed) -->
+<div
+  class="sidebar-backdrop"
+  *ngIf="isOpen && !pinned"
+  (click)="closeIfNotPinned()"
+  aria-hidden="true">
+</div>
+
+<aside class="sidebar" [class.open]="isOpen" [class.pinned]="pinned">
+
+  <!-- ── HEADER ── -->
+  <div class="sidebar-header">
+    <h2 class="title">
+      <i class="fas fa-bars" aria-hidden="true" style="margin-right:8px;font-size:13px;opacity:0.7;"></i>
+      Menu
+    </h2>
+    <button type="button" class="close-btn" aria-label="Close sidebar"
+      (click)="closeIfNotPinned()" *ngIf="!pinned">✕</button>
+  </div>
+
+  <!-- ── NAV ── -->
+  <nav class="sidebar-nav" aria-label="Admin navigation">
+    <ul class="sidebar-links">
+      <li *ngFor="let item of menuItems">
+        <a [routerLink]="item.route" routerLinkActive="active"
+           [routerLinkActiveOptions]="{ exact: true }"
+           (click)="closeIfNotPinned()">
+          <i [class]="item.icon" aria-hidden="true"></i>
+          {{ item.label }}
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+</aside>

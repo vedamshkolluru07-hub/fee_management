@@ -1,0 +1,43 @@
+.token-page{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;background:var(--background);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;transition:var(--transition)}
+
+.token-card{width:100%;max-width:420px;background:var(--surface);padding:28px;border-radius:var(--radius-xl);border:1px solid var(--border);box-shadow:var(--shadow-lg);transition:var(--transition)}
+
+.token-card:hover{transform:translateY(-2px)}
+
+.token-title{text-align:center;margin-bottom:20px;font-size:22px;font-weight:700;color:var(--text)}
+
+.token-form{display:flex;flex-direction:column;gap:16px}
+
+.form-group{display:flex;flex-direction:column;gap:6px}
+
+label{font-size:14px;font-weight:600;color:var(--text-light)}
+
+.form-input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-md);font-size:14px;outline:none;background:var(--surface);color:var(--text);transition:var(--transition)}
+
+.form-input::placeholder{color:var(--placeholder)}
+
+.form-input:focus{border-color:var(--primary);box-shadow:0 0 0 4px color-mix(in srgb,var(--primary) 15%,transparent)}
+
+.error-text{color:var(--danger);font-size:12px;margin-top:4px}
+
+.submit-btn{padding:11px;width:100%;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border:none;border-radius:var(--radius-md);font-size:15px;font-weight:700;cursor:pointer;transition:var(--transition)}
+
+.submit-btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-md)}
+
+.submit-btn:disabled{background:var(--secondary);cursor:not-allowed;transform:none;box-shadow:none}
+
+.alert{padding:10px 12px;border-radius:var(--radius-md);font-size:14px;text-align:center}
+
+.alert.success{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
+
+.alert.error{background:#fee2e2;color:#991b1b;border:1px solid #fecaca}
+
+[data-theme="dark"] .alert.success{background:rgba(34,197,94,.18);color:#86efac;border-color:rgba(34,197,94,.35)}
+
+[data-theme="dark"] .alert.error{background:rgba(239,68,68,.18);color:#fca5a5;border-color:rgba(239,68,68,.35)}
+
+@media(max-width:480px){
+.token-page{padding:12px}
+.token-card{padding:20px;border-radius:var(--radius-lg)}
+.token-title{font-size:20px}
+}

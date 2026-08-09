@@ -1,0 +1,107 @@
+<div class="page-wrap">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div class="header-left">
+      <button class="btn-ghost" (click)="goToView()">← Back to View</button>
+      <h1 class="page-title">Create Classes</h1>
+    </div>
+  </div>
+
+  <!-- Academic Year -->
+  <div class="context-bar" *ngIf="selectedYear">
+    <span class="context-label">Academic Year:</span>
+    <span class="context-value">{{ selectedYear.yearLabel }}</span>
+  </div>
+
+  <div class="alert alert-error" *ngIf="!selectedYear">
+    No academic year selected.
+  </div>
+
+  <div class="alert alert-success" *ngIf="successMessage">
+    {{ successMessage }}
+  </div>
+
+  <div class="alert alert-error" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <!-- CLASS LIST -->
+  <div class="class-block" *ngFor="let draft of drafts; let i = index">
+
+    <div class="class-block-header">
+      <span class="class-num">{{ draft.className }}</span>
+    </div>
+
+    <div class="table-card">
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Class</th>
+            <th>Fee</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+
+            <!-- CLASS NAME -->
+            <td>
+              <input
+                type="text"
+                [value]="draft.className"
+                disabled
+                class="cell-input"
+              />
+            </td>
+
+            <!-- FEE CONTROLS -->
+            <td>
+              <div class="fee-row">
+
+                <input
+                  type="number"
+                  class="fee-input"
+                  [(ngModel)]="draft.feeAmount"
+                  (ngModelChange)="updateFromIndex(i, $event)"
+                  placeholder="Fee"
+                />
+
+                <select class="step-select" [(ngModel)]="selectedStep">
+                  <option [ngValue]="100">100</option>
+                  <option [ngValue]="500">500</option>
+                  <option [ngValue]="1000">1000</option>
+                  <option [ngValue]="5000">5000</option>
+                </select>
+
+                <button type="button" (click)="decreaseFrom(i, selectedStep)">
+                  −
+                </button>
+
+                <button type="button" (click)="increaseFrom(i, selectedStep)">
+                  +
+                </button>
+
+              </div>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer-actions">
+    <button
+      class="btn-save"
+      (click)="saveAll()"
+      [disabled]="saving || !isValid()"
+    >
+      {{ saving ? 'Saving…' : 'Save Classes' }}
+    </button>
+  </div>
+
+</div>

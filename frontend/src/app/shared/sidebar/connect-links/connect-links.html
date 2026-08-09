@@ -1,0 +1,63 @@
+<div class="connect-page">
+  <header class="page-header">
+    <h2>Connect Links & Site Theme</h2>
+    <p>Control the floating contact widget and the public site's colors.</p>
+  </header>
+
+  <!-- CONNECT LINKS -->
+  <section class="section-card">
+    <h3>Connect Widget Links</h3>
+    <p class="hint">Only platforms with a value AND the toggle on will appear on the public site.</p>
+
+    <div *ngIf="linksMessage()" class="inline-message">{{ linksMessage() }}</div>
+
+    <div *ngIf="loading()" class="loading">Loading...</div>
+
+    <div class="links-grid" *ngIf="!loading()">
+      <div class="link-row" *ngFor="let link of links()">
+        <label class="platform-name">{{ link.platform }}</label>
+        <input
+          type="text"
+          [(ngModel)]="link.value"
+          placeholder="Phone / handle / URL / email..."
+        />
+        <label class="toggle">
+          <input type="checkbox" [(ngModel)]="link.is_enabled" />
+          Enabled
+        </label>
+        <button type="button" class="btn-secondary" (click)="saveLink(link)" [disabled]="savingLinks()">Save</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SITE THEME -->
+  <section class="section-card">
+    <h3>Site Colors</h3>
+    <p class="hint">Applies to the public Home and About pages.</p>
+
+    <div *ngIf="themeMessage()" class="inline-message">{{ themeMessage() }}</div>
+
+    <div class="theme-grid">
+      <div class="color-field">
+        <label>Primary</label>
+        <input type="color" [(ngModel)]="theme.primary_color" />
+      </div>
+      <div class="color-field">
+        <label>Secondary</label>
+        <input type="color" [(ngModel)]="theme.secondary_color" />
+      </div>
+      <div class="color-field">
+        <label>Background</label>
+        <input type="color" [(ngModel)]="theme.background_color" />
+      </div>
+      <div class="color-field">
+        <label>Text</label>
+        <input type="color" [(ngModel)]="theme.text_color" />
+      </div>
+    </div>
+
+    <button type="button" class="btn-primary" (click)="saveTheme()" [disabled]="savingTheme()">
+      {{ savingTheme() ? 'Saving...' : 'Save theme' }}
+    </button>
+  </section>
+</div>

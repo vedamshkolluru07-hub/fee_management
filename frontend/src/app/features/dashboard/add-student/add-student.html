@@ -1,0 +1,293 @@
+<form #formRef="ngForm" (ngSubmit)="submitForm()" novalidate>
+
+  <div class="registration-container">
+
+    <div class="form-header">
+      <h2>Student Registration Form</h2>
+      <p>Complete the details below to register a student.</p>
+    </div>
+
+    <!-- ================= ACADEMIC YEAR ================= -->
+    <fieldset class="form-section">
+      <legend>Academic Year</legend>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label for="academic_year_id">Academic Year *</label>
+
+          <select
+            id="academic_year_id"
+            name="academic_year_id"
+            [(ngModel)]="form.academic_year_id"
+            (change)="onAcademicYearChange()"
+            required>
+
+            <option [ngValue]="null" disabled>Select Academic Year</option>
+
+            <option *ngFor="let year of academicYears"
+                    [ngValue]="year.academicYearId">
+              {{ year.yearLabel }}
+            </option>
+
+          </select>
+        </div>
+
+        <div class="form-group year-info" *ngIf="selectedYear">
+
+          <label id="year-status-label">Academic Year Status</label>
+
+          <div class="year-status" aria-labelledby="year-status-label">
+            {{ selectedYear.isCurrentYear ? '🟢 Current Year' : '🔴 Previous Year' }}
+          </div>
+
+          <small class="hint">
+            {{ selectedYear.startDate | date:'dd MMM yyyy' }}
+            -
+            {{ selectedYear.endDate | date:'dd MMM yyyy' }}
+          </small>
+
+        </div>
+
+      </div>
+    </fieldset>
+
+    <!-- ================= CLASS ================= -->
+    <fieldset class="form-section" *ngIf="form.academic_year_id">
+
+      <legend>Class Information</legend>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label for="class_id">Class *</label>
+
+          <select
+            id="class_id"
+            name="class_id"
+            [(ngModel)]="form.class_id"
+            (change)="onClassChange()"
+            required>
+
+            <option [ngValue]="null" disabled>Select Class</option>
+
+            <option *ngFor="let cls of classes"
+                    [ngValue]="cls.classId">
+              {{ cls.className }}
+            </option>
+
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="fee_amount">Class Fee</label>
+          <input id="fee_amount" type="number" [value]="fee_amount" readonly>
+        </div>
+
+      </div>
+    </fieldset>
+
+    <!-- ================= STUDENT DETAILS ================= -->
+    <div *ngIf="form.class_id">
+
+      <fieldset class="form-section">
+        <legend>Student Details</legend>
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label for="student_id">Student ID *</label>
+            <input id="student_id" name="student_id" [(ngModel)]="form.student_id" required>
+          </div>
+
+          <div class="form-group">
+            <label for="student_name">Student Name *</label>
+            <input id="student_name" name="student_name" [(ngModel)]="form.student_name" required>
+          </div>
+
+          <div class="form-group">
+            <label for="dob">DOB *</label>
+            <input id="dob" type="date" name="dob"
+                   [(ngModel)]="form.dob"
+                   (change)="calculateAge()"
+                   required>
+          </div>
+
+          <div class="form-group">
+            <label for="age">Age</label>
+            <input id="age" [value]="age" readonly>
+          </div>
+
+          <div class="form-group">
+            <label for="gender">Gender *</label>
+            <select id="gender" name="gender" [(ngModel)]="form.gender" required>
+              <option [ngValue]="null">Select</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="section">Section</label>
+            <select id="section" name="section" [(ngModel)]="form.section">
+              <option value="A">A</option>
+              <option value="B">B</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="email_id">Email</label>
+            <input id="email_id" type="email" name="email_id" [(ngModel)]="form.email_id">
+          </div>
+
+          <div class="form-group">
+            <label for="admission_date">Admission Date</label>
+            <input id="admission_date" type="date" name="admission_date" [(ngModel)]="form.admission_date">
+          </div>
+
+        </div>
+      </fieldset>
+
+      <!-- ================= PARENT DETAILS ================= -->
+      <fieldset class="form-section">
+        <legend>Parent Details</legend>
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label for="contact_number">Contact *</label>
+            <input id="contact_number" name="contact_number" [(ngModel)]="form.contact_number" required>
+          </div>
+
+          <div class="form-group">
+            <label for="fathers_first_name">Father First Name *</label>
+            <input id="fathers_first_name" name="fathers_first_name" [(ngModel)]="form.fathers_first_name" required>
+          </div>
+
+          <div class="form-group">
+            <label for="fathers_sur_name">Father Last Name *</label>
+            <input id="fathers_sur_name" name="fathers_sur_name" [(ngModel)]="form.fathers_sur_name" required>
+          </div>
+
+          <div class="form-group">
+            <label for="mothers_first_name">Mother First Name</label>
+            <input id="mothers_first_name" name="mothers_first_name" [(ngModel)]="form.mothers_first_name">
+          </div>
+
+          <div class="form-group">
+            <label for="mothers_sur_name">Mother Last Name</label>
+            <input id="mothers_sur_name" name="mothers_sur_name" [(ngModel)]="form.mothers_sur_name">
+          </div>
+
+          <div class="form-group">
+            <label for="secondary_contact_number">Secondary Contact</label>
+            <input id="secondary_contact_number" name="secondary_contact_number" [(ngModel)]="form.secondary_contact_number">
+          </div>
+
+          <div class="form-group">
+            <label for="parent_email">Email</label>
+            <input id="parent_email" name="email" [(ngModel)]="form.email">
+          </div>
+
+          <div class="form-group full-width">
+            <label for="address">Address</label>
+            <textarea id="address" name="address" [(ngModel)]="form.address"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="relationship">Relationship</label>
+            <select id="relationship" name="relationship" [(ngModel)]="form.relationship">
+              <option [ngValue]="null">Select</option>
+              <option value="Father">Father</option>
+              <option value="Mother">Mother</option>
+              <option value="Guardian">Guardian</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="occupation">Occupation</label>
+            <input id="occupation" name="occupation" [(ngModel)]="form.occupation">
+          </div>
+
+        </div>
+      </fieldset>
+
+      <!-- ================= PAYMENT ================= -->
+      <fieldset class="form-section">
+        <legend>Payment Details</legend>
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label for="concession">Concession</label>
+            <input id="concession" type="number" name="concession" [(ngModel)]="form.concession">
+          </div>
+
+          <div class="form-group">
+            <label for="amount_paid">Amount Paid</label>
+            <input id="amount_paid" type="number" name="amount_paid" [(ngModel)]="form.amount_paid">
+          </div>
+
+          <div class="form-group">
+            <label for="payment_method">Payment Method</label>
+            <select id="payment_method" name="payment_method" [(ngModel)]="form.payment_method">
+              <option [ngValue]="null">Select</option>
+              <option value="cash">Cash</option>
+              <option value="card">Card</option>
+              <option value="online">Online</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="due_date">Due Date</label>
+            <input id="due_date" type="date" name="due_date" [(ngModel)]="form.due_date">
+          </div>
+
+          <div class="form-group">
+            <label for="pendingAmount">Pending Amount</label>
+            <input id="pendingAmount" [value]="pendingAmount" readonly>
+          </div>
+
+          <div class="form-group">
+            <label for="totalFee">Total Fee</label>
+            <input id="totalFee" [value]="totalFee" readonly>
+          </div>
+
+        </div>
+      </fieldset>
+
+      <!-- ================= ACTIONS ================= -->
+      <div class="form-actions">
+
+        <button type="submit" [disabled]="loading">
+          Save Student
+        </button>
+
+        <button type="button" class="btn-secondary" (click)="resetForm()">
+          Reset
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- ================= STATUS ================= -->
+    <!-- previously plain, unstyled <div>s with no matching CSS class at
+         all — success and failure looked identical. Now uses the same
+         .alert system as the rest of the app. -->
+    @if (loading) {
+      <div class="alert" role="status">Saving student...</div>
+    }
+
+    @if (message) {
+      <div class="alert" [class.alert-success]="isSuccess" [class.alert-error]="!isSuccess" role="status">
+        <p>{{ message }}</p>
+        @if (studentId) { <p>Student ID: {{ studentId }}</p> }
+        @if (paymentId) { <p>Payment ID: {{ paymentId }}</p> }
+      </div>
+    }
+
+  </div>
+
+</form>

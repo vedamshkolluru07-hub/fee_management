@@ -1,0 +1,147 @@
+<div class="notif-wrapper">
+
+  <!-- HEADER -->
+  <div class="notif-header">
+
+    <div class="title-group">
+      <h2>
+        Notifications
+        <span class="badge">{{ unreadCount() }}</span>
+      </h2>
+      <p class="subtitle">Stay updated with latest activity</p>
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="markAllAsRead()"
+    >
+      Mark All Read
+    </button>
+
+  </div>
+
+  <!-- FILTERS -->
+  <div class="notif-filters">
+
+    <input
+      type="text"
+      class="input"
+      placeholder="Search notifications..."
+      [ngModel]="search()"
+      (ngModelChange)="search.set($event)"
+    />
+
+    <select
+      class="select"
+      [ngModel]="selectedType()"
+      (ngModelChange)="selectedType.set($event)"
+    >
+      <option value="">All Types</option>
+      <option value="info">Info</option>
+      <option value="warning">Warning</option>
+      <option value="success">Success</option>
+      <option value="error">Error</option>
+    </select>
+
+    <label class="checkbox">
+      <input
+        type="checkbox"
+        [ngModel]="showUnreadOnly()"
+        (ngModelChange)="showUnreadOnly.set($event)"
+      />
+      <span>Unread only</span>
+    </label>
+
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="applyFilters()"
+    >
+      Apply
+    </button>
+
+  </div>
+
+  <!-- LOADING -->
+  @if (loading()) {
+    <div class="state loading">
+      Loading notifications...
+    </div>
+  }
+
+  <!-- ERROR -->
+  @if (error()) {
+    <div class="state error">
+      {{ error() }}
+    </div>
+  }
+
+  <!-- EMPTY -->
+  @if (!loading() && notifications().length === 0) {
+    <div class="state empty">
+      No notifications found.
+    </div>
+  }
+
+  <!-- LIST -->
+  <div class="notif-list">
+
+    @for (
+      notification of filteredNotifications();
+      track trackByNotification($index, notification)
+    ) {
+
+      <div
+        class="notif-card"
+        [class.unread]="!notification.is_read"
+      >
+
+        <div class="notif-main">
+
+          <div class="notif-top">
+            <h3>{{ notification.title }}</h3>
+
+            <span class="type" [attr.data-type]="notification.type">
+              {{ notification.type }}
+            </span>
+          </div>
+
+          <p class="message">
+            {{ notification.message }}
+          </p>
+
+          <small class="time">
+            {{ notification.created_at | date:'medium' }}
+          </small>
+
+        </div>
+
+        <div class="notif-actions">
+
+          @if (!notification.is_read) {
+            <button
+              type="button"
+              class="btn btn-small btn-success"
+              (click)="markAsRead(notification)"
+            >
+              Mark Read
+            </button>
+          }
+
+          <button
+            type="button"
+            class="btn btn-small btn-danger"
+            (click)="deleteNotification(notification.notification_id)"
+          >
+            Delete
+          </button>
+
+        </div>
+
+      </div>
+    }
+
+  </div>
+
+</div>

@@ -1,0 +1,19 @@
+<div class="connect-widget" *ngIf="links().length">
+  <div class="connect-options" [class.open]="open()">
+    <a
+      *ngFor="let link of links()"
+      [href]="link.href"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="connect-option"
+      [attr.aria-label]="labelFor(link.platform)"
+      [title]="labelFor(link.platform)"
+    >
+      <span class="connect-icon">{{ iconFor(link.platform) }}</span>
+    </a>
+  </div>
+
+  <button type="button" class="connect-toggle" (click)="toggle()" [attr.aria-expanded]="open()">
+    {{ open() ? '✕' : '💬' }}
+  </button>
+</div>

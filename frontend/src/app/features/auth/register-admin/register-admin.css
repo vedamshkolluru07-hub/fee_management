@@ -1,0 +1,11 @@
+/* src/app/features/auth/register-admin/register-admin.css */
+/* Card shell, form groups, field errors, and alerts now come from the
+   shared classes in styles.css. The wider layout (more fields than
+   login/register) is handled by the .auth-card--lg modifier in the
+   template rather than a bespoke max-width here. */
+
+:host {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}

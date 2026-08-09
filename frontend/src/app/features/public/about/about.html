@@ -1,0 +1,9 @@
+<div class="about-page">
+  <h4 class="about-title">About Us</h4>
+
+  <div *ngIf="loading()" class="about-loading">Loading...</div>
+
+  <div *ngIf="!loading()" class="about-blocks">
+    <p *ngFor="let block of blocks()" class="about-block">{{ block.text_content }}</p>
+  </div>
+</div>

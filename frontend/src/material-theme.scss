@@ -1,0 +1,32 @@
+// Include theming for Angular Material with `mat.theme()`.
+// This Sass mixin defines the CSS variables Angular Material components use.
+// Learn more: https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
+
+html {
+  height: 100%;
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
+}
+
+// NOTE: we intentionally do NOT set body { background-color / color } here.
+// Doing so previously overrode the app's own --bg-page / --text-primary
+// theme variables (defined in styles.css and swapped via [data-theme]),
+// which meant switching theme (light/dark/blue/green) never actually
+// changed the page background — Angular Material's --mat-sys-surface
+// always won. The app's own theme system in styles.css now owns body
+// background/color; Material components still pick up --mat-sys-* tokens
+// for their own internals (buttons, inputs, etc).
+
+body {
+  margin: 0;
+  height: 100%;
+}

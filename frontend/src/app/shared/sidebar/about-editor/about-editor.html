@@ -1,0 +1,38 @@
+<div class="editor-page">
+  <header class="editor-header">
+    <div>
+      <h2>About Page Editor</h2>
+      <p>Add and reorder text sections. Changes save as draft until you Publish.</p>
+    </div>
+    <div class="editor-actions">
+      <button type="button" class="btn-secondary" (click)="discardDraft()" [disabled]="saving()">Discard changes</button>
+      <button type="button" class="btn-primary" (click)="publish()" [disabled]="saving()">
+        {{ saving() ? 'Working...' : 'Publish' }}
+      </button>
+    </div>
+  </header>
+
+  <div *ngIf="message()" class="editor-message">{{ message() }}</div>
+
+  <div class="add-row">
+    <textarea [(ngModel)]="newText" placeholder="New paragraph..." rows="2"></textarea>
+    <button type="button" class="btn-secondary" (click)="addBlock()">+ Add section</button>
+  </div>
+
+  <div *ngIf="loading()" class="editor-loading">Loading...</div>
+
+  <div *ngIf="!loading()" class="about-list">
+    <div class="about-item" *ngFor="let block of blocks(); let i = index">
+      <div class="about-item-controls">
+        <button type="button" (click)="moveUp(i)" [disabled]="i === 0">↑</button>
+        <button type="button" (click)="moveDown(i)" [disabled]="i === blocks().length - 1">↓</button>
+        <button type="button" class="delete-btn" (click)="deleteBlock(block)">✕</button>
+      </div>
+      <textarea
+        [value]="block.text_content"
+        (input)="updateText(block, $any($event.target).value)"
+        rows="3"
+      ></textarea>
+    </div>
+  </div>
+</div>

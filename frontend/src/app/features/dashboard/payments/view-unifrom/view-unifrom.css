@@ -1,0 +1,231 @@
+/* ==========================================================
+   view-unifrom.css
+   Rewritten to match the ACTUAL classes used in view-unifrom.html
+   (.uniform-transaction, .meta-row, .rows-table, .add-row, .total-row,
+   .submit-btn, .history-section — none of which existed in the old
+   copy-pasted boilerplate)
+   ========================================================== */
+
+.section {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin: 16px;
+}
+
+.section h3 {
+  margin: 0 0 12px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.section div {
+  padding: 4px 0;
+  font-size: 13.5px;
+  color: var(--text-secondary);
+}
+
+.section strong { color: var(--text-primary); margin-right: 6px; }
+
+.uniform-transaction {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 22px;
+  margin: 16px;
+}
+
+.header {
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.header h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 6px;
+}
+
+.header p {
+  color: var(--text-muted);
+  font-size: 13.5px;
+  margin: 0;
+}
+
+/* ── FORM META ROW ── */
+.meta-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.meta-row label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  flex: 1 1 200px;
+}
+
+.meta-row input,
+.meta-row select {
+  padding: 9px 12px;
+  border: 1px solid var(--input-border);
+  border-radius: 9px;
+  background: var(--input-bg);
+  color: var(--text-primary);
+  font-size: 14px;
+  outline: none;
+}
+
+.meta-row input:focus,
+.meta-row select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+/* ── ROWS TABLE (uniform line items) ── */
+.rows-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 14px;
+  font-size: 13px;
+}
+
+.rows-table th {
+  padding: 9px 10px;
+  text-align: left;
+  background: var(--bg-surface-2);
+  color: var(--text-secondary);
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.rows-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
+}
+
+.rows-table td.center,
+.rows-table th.center { text-align: center; }
+.center { text-align: center; }
+
+.rows-table input,
+.rows-table select {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--input-border);
+  border-radius: 7px;
+  background: var(--input-bg);
+  color: var(--text-primary);
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.rows-table input[readonly] {
+  background: var(--bg-surface-2);
+  color: var(--text-muted);
+}
+
+.rows-table input[type="checkbox"] {
+  width: auto;
+  cursor: pointer;
+}
+
+.rows-table button {
+  border: 1px solid var(--danger-border);
+  background: var(--danger-light);
+  color: var(--danger);
+  border-radius: 7px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.rows-table button:hover:not(:disabled) { background: var(--danger-border); }
+.rows-table button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.text-capitalize { text-transform: capitalize; }
+
+/* ── ADD ROW / SUBMIT ── */
+.add-row {
+  background: var(--bg-surface-2);
+  color: var(--primary);
+  border: 1px dashed var(--primary);
+  border-radius: 9px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 16px;
+}
+.add-row:hover { background: var(--primary-light); }
+
+.total-row {
+  text-align: right;
+  padding: 10px 0;
+  font-size: 15px;
+  color: var(--text-primary);
+  border-top: 1px solid var(--border-color);
+  margin-bottom: 16px;
+}
+
+.error {
+  background: var(--danger-light);
+  color: var(--danger);
+  border: 1px solid var(--danger-border);
+  padding: 10px 14px;
+  border-radius: 9px;
+  font-size: 13.5px;
+  margin-bottom: 14px;
+}
+
+.submit-btn {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  padding: 11px 22px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.submit-btn:hover:not(:disabled) { background: var(--primary-hover); }
+.submit-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* ── HISTORY SECTION ── */
+.history-section {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+.history-section h3,
+.history-section h4 {
+  color: var(--text-primary);
+  margin: 0 0 12px;
+}
+
+.history-section h4 { margin-top: 22px; font-size: 0.95rem; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .section,
+  .uniform-transaction { margin: 10px; padding: 16px; }
+  .meta-row { flex-direction: column; }
+  .rows-table { display: block; overflow-x: auto; }
+}

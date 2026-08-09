@@ -1,0 +1,65 @@
+<div class="enquiries-page">
+  <header class="page-header">
+    <h2>Enquiries</h2>
+    <p>Messages submitted through the public website query box.</p>
+  </header>
+
+  <div class="filters">
+    <select [(ngModel)]="statusFilter" (change)="applyFilters()">
+      <option value="">All statuses</option>
+      <option value="new">New</option>
+      <option value="in_progress">In Progress</option>
+      <option value="resolved">Resolved</option>
+    </select>
+
+    <select [(ngModel)]="typeFilter" (change)="applyFilters()">
+      <option [ngValue]="null">All types</option>
+      <option *ngFor="let t of types()" [ngValue]="t.id">{{ t.label }}</option>
+    </select>
+
+    <input type="text" [(ngModel)]="searchFilter" placeholder="Search phone number..." (keyup.enter)="applyFilters()" />
+    <button type="button" class="btn-secondary" (click)="applyFilters()">Search</button>
+  </div>
+
+  <div *ngIf="loading()" class="loading">Loading...</div>
+
+  <table class="enquiries-table" *ngIf="!loading()">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Type</th>
+        <th>Phone</th>
+        <th>Message</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let e of enquiries()">
+        <td>{{ e.created_at | date: 'mediumDate' }}</td>
+        <td>{{ e.enquiry_type_label }}</td>
+        <td>{{ e.phone }}</td>
+        <td class="message-cell">{{ e.message }}</td>
+        <td>
+          <select [ngModel]="e.status" (ngModelChange)="changeStatus(e, $event)">
+            <option value="new">New</option>
+            <option value="in_progress">In Progress</option>
+            <option value="resolved">Resolved</option>
+          </select>
+        </td>
+        <td>
+          <button type="button" class="delete-btn" (click)="remove(e)">✕</button>
+        </td>
+      </tr>
+      <tr *ngIf="!enquiries().length">
+        <td colspan="6" class="empty-cell">No enquiries found.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="pagination" *ngIf="!loading()">
+    <button type="button" (click)="prevPage()" [disabled]="page <= 1">← Prev</button>
+    <span>Page {{ page }}</span>
+    <button type="button" (click)="nextPage()" [disabled]="page * pageSize >= total()">Next →</button>
+  </div>
+</div>

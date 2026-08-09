@@ -1,0 +1,95 @@
+<!-- ======================================================
+     src/app/layouts/main-layout/main-layout.html
+====================================================== -->
+
+<div class="main-layout">
+
+  <!-- ================= HEADER ================= -->
+  <app-header (toggleSidebar)="onSidebarToggle($event)"></app-header>
+
+  <!-- ================= SIDEBAR ================= -->
+  <app-sidebar
+    [isOpen]="isSidebarOpen"
+    [pinned]="isSidebarPinned"
+    (closeSidebar)="onSidebarClose()"
+    [class.open]="isSidebarOpen"
+    [class.pinned]="isSidebarPinned">
+  </app-sidebar>
+
+  <!-- ================= PAGE WRAPPER ================= -->
+  <div
+    class="page-wrapper"
+    [class.sidebar-open]="isSidebarOpen"
+    [class.sidebar-pinned]="isSidebarPinned">
+
+    <!-- ================= BREADCRUMB ================= -->
+    <app-breadcrumb></app-breadcrumb>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <main class="content">
+      <router-outlet></router-outlet>
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer" [class.show]="showFooter">
+      <div class="footer-content">
+        <p>© 2026 Developed by Vedamsh Enterprises</p>
+        <p class="developer">Developer @vedamsh</p>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ======================================================
+       📅 RIGHT SIDE CALENDAR REMINDER PANEL
+  ====================================================== -->
+
+  @if (activeReminder) {
+    <div class="calendar-reminder-panel">
+
+      <div class="reminder-header">
+        <h4>📅 Reminder</h4>
+        <button type="button" (click)="closeReminder()">✖</button>
+      </div>
+
+      <div class="reminder-body">
+
+        <div class="title">
+          {{ activeReminder.title }}
+        </div>
+
+        <div class="message">
+          {{ activeReminder.message }}
+        </div>
+
+        <div class="meta">
+          ⏳ Stage: {{ activeReminder.reminder_stage }} days
+        </div>
+
+      </div>
+
+      <div class="reminder-actions">
+
+        <button type="button" (click)="goToCalendar()">
+          Open
+        </button>
+
+        <button type="button" (click)="closeReminder()">
+          Dismiss
+        </button>
+
+      </div>
+
+    </div>
+  }
+
+  <!-- ================= SECRET WATERMARK ================= -->
+  <div
+    id="watermark"
+    [class.show]="showWatermark">
+
+    ⚡ Developed by Vedamsh Enterprises ⚡
+
+  </div>
+
+</div>

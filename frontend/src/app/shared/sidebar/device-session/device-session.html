@@ -1,0 +1,105 @@
+<div class="session-wrapper">
+
+  <!-- HEADER -->
+  <div class="session-header">
+    <h2>Device Sessions</h2>
+    <p class="subtitle">View login activity and active sessions</p>
+  </div>
+
+  <!-- USER SELECTION -->
+  <div class="user-selector-card">
+    <label for="userSelect">Select User</label>
+
+    @if (usersLoading) {
+      <div class="state loading">Loading users...</div>
+    } @else if (usersError) {
+      <div class="state error">{{ usersError }}</div>
+    } @else {
+      <select id="userSelect" [value]="selectedUserId" (change)="onUserSelected($event)">
+        <option value="">-- Select User --</option>
+
+        @for (user of users; track user.user_id) {
+          <option [value]="user.user_id">
+            {{ user.first_name }} {{ user.last_name }} ({{ user.username }})
+          </option>
+        }
+      </select>
+    }
+  </div>
+
+  <!-- SELECTED USER DETAILS -->
+  @if (selectedUser) {
+    <div class="selected-user-card">
+      <h3>Selected User</h3>
+      <div class="user-details">
+        <span><strong>Name:</strong> {{ selectedUser.first_name }} {{ selectedUser.last_name }}</span>
+        <span><strong>Username:</strong> {{ selectedUser.username }}</span>
+        <span><strong>Role:</strong> {{ selectedUser.role }}</span>
+      </div>
+    </div>
+  }
+
+  <!-- LOADING -->
+  @if (loading) {
+    <div class="state loading">Loading sessions...</div>
+  }
+
+  <!-- ERROR -->
+  @if (error) {
+    <div class="state error">{{ error }}</div>
+  }
+
+  <!-- EMPTY -->
+  @if (!loading && !error && selectedUserId && sessions.length === 0) {
+    <div class="state empty">No sessions found for this user</div>
+  }
+
+  <!-- NO USER SELECTED -->
+  @if (!loading && !selectedUserId) {
+    <div class="state empty">Please select a user to view sessions</div>
+  }
+
+  <!-- SESSIONS -->
+  @if (!loading && sessions.length > 0) {
+    <div class="session-grid">
+      @for (session of sessions; track trackBySessionKey($index, session)) {
+        <div class="session-card">
+
+          <!-- CARD HEADER -->
+          <div class="card-top">
+            <h3>Session {{ session.session_date }}</h3>
+            <button class="btn btn-danger btn-small" (click)="deleteSession(session)">
+              Delete
+            </button>
+          </div>
+
+          <!-- META -->
+          <div class="meta">
+            <p><span>Created:</span> {{ session.created_at | date:'medium' }}</p>
+            <p><span>Updated:</span> {{ session.updated_at | date:'medium' }}</p>
+          </div>
+
+          <!-- ACTIVITY -->
+          <div class="activity-section">
+            <h4>Activity Periods</h4>
+
+            @if ((session.activity_periods || []).length > 0) {
+              <ul class="activity-list">
+                @for (activity of (session.activity_periods || []); track $index) {
+                  <li class="activity-item">
+                    <div><strong>Start:</strong> {{ activity.start | date:'medium' }}</div>
+                    <div><strong>End:</strong> {{ activity.end ? (activity.end | date:'medium') : 'Active' }}</div>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <p class="muted">No activity recorded.</p>
+            }
+          </div>
+
+        </div>
+      }
+    </div>
+  }
+
+</div>

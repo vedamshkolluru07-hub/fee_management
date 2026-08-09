@@ -1,0 +1,57 @@
+<div class="token-page">
+  <div class="token-card">
+
+    <h2 class="token-title">Send Password Reset Token</h2>
+
+    <form class="token-form" [formGroup]="tokenForm" (ngSubmit)="sendToken()">
+
+      <!-- IDENTIFIER -->
+      <div class="form-group">
+        <label for="identifier">Username / Email / Phone</label>
+
+        <input
+          id="identifier"
+          type="text"
+          formControlName="identifier"
+          class="form-input"
+          placeholder="Enter username, email or phone"
+        />
+
+        @if (tokenForm.get('identifier')?.touched && tokenForm.get('identifier')?.invalid) {
+          <small class="error-text">
+            Identifier is required
+          </small>
+        }
+      </div>
+
+      <!-- SUBMIT BUTTON -->
+      <button
+        type="submit"
+        class="submit-btn"
+        [disabled]="loading() || tokenForm.invalid"
+      >
+        @if (loading()) {
+          Sending Token...
+        } @else {
+          Send Reset Token
+        }
+      </button>
+
+      <!-- SUCCESS MESSAGE -->
+      @if (message()) {
+        <div class="alert success">
+          {{ message() }}
+        </div>
+      }
+
+      <!-- ERROR MESSAGE -->
+      @if (error()) {
+        <div class="alert error">
+          {{ error() }}
+        </div>
+      }
+
+    </form>
+
+  </div>
+</div>

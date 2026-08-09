@@ -1,0 +1,105 @@
+/* ==========================================================
+   transactions.css
+   Written to match the ACTUAL classes used in transactions.html
+   (.transactions-container, .section, .button-container)
+   ========================================================== */
+
+.transactions-container {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  max-width: 820px;
+  margin: 20px auto;
+  padding: 24px 28px;
+  box-shadow: var(--shadow);
+}
+
+.transactions-container > h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 18px;
+}
+
+/* ── SECTIONS ── */
+.section {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.section:last-of-type { border-bottom: none; }
+
+.section h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 14px;
+}
+
+.section div {
+  display: flex;
+  gap: 6px;
+  padding: 5px 0;
+  font-size: 13.5px;
+  color: var(--text-secondary);
+}
+
+.section div strong {
+  color: var(--text-primary);
+  min-width: 150px;
+  font-weight: 600;
+}
+
+/* ── ACTION BUTTONS ── */
+.button-container {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 22px;
+  margin-top: 8px;
+}
+
+.button-container p {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.button-container button {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  padding: 9px 18px;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.button-container button:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+/* give the "Family Pending" action a distinct look since it's not a payment type */
+.button-container button:last-of-type {
+  background: var(--bg-surface-2);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.button-container button:last-of-type:hover {
+  background: var(--border-color);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .transactions-container { margin: 12px; padding: 18px; }
+  .section div { flex-direction: column; gap: 2px; }
+  .section div strong { min-width: 0; }
+  .button-container { flex-direction: column; align-items: stretch; }
+  .button-container button { width: 100%; }
+}

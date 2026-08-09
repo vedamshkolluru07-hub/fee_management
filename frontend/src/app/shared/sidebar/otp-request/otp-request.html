@@ -1,0 +1,71 @@
+<div class="otp-wrapper">
+  <div class="otp-card">
+
+    <h2 class="otp-title">Send OTP</h2>
+    <p class="otp-subtitle">Verify your account securely</p>
+
+    <form class="otp-form" [formGroup]="otpForm" (ngSubmit)="sendOtp()">
+
+      <!-- IDENTIFIER -->
+      <div class="form-group">
+        <label for="identifier">Username / Email / Phone</label>
+
+        <input
+          id="identifier"
+          type="text"
+          formControlName="identifier"
+          placeholder="Enter username, email or phone"
+          class="form-input"
+        />
+
+        @if (identifier.touched && identifier.invalid) {
+          <small class="error-text">
+            Identifier is required
+          </small>
+        }
+      </div>
+
+      <!-- METHOD -->
+      <div class="form-group">
+        <label for="method">OTP Method</label>
+
+        <select
+          id="method"
+          formControlName="method"
+          class="form-select"
+        >
+          <option value="sms">SMS</option>
+          <option value="email">Email</option>
+        </select>
+      </div>
+
+      <!-- BUTTON -->
+      <button
+        type="submit"
+        class="otp-button"
+        [disabled]="loading()"
+      >
+        @if (loading()) {
+          Sending OTP...
+        } @else {
+          Send OTP
+        }
+      </button>
+
+      <!-- SUCCESS -->
+      @if (message()) {
+        <div class="alert success">
+          {{ message() }}
+        </div>
+      }
+
+      <!-- ERROR -->
+      @if (error()) {
+        <div class="alert error">
+          {{ error() }}
+        </div>
+      }
+
+    </form>
+  </div>
+</div>

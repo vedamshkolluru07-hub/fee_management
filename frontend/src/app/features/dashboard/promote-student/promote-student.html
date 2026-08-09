@@ -1,0 +1,216 @@
+<!-- =========================================
+     PROMOTE STUDENTS MODAL
+========================================= -->
+
+<div
+  *ngIf="selectedOperation === 'promote'"
+  class="modal-overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="promotionModalTitle"
+>
+
+  <div class="promotion-modal">
+
+    <!-- Header -->
+    <div class="modal-header">
+
+      <div class="header-content">
+        <h2 id="promotionModalTitle">
+          🎓 Promote Students
+        </h2>
+
+        <p>
+          Select the academic year and class, then review each student before promoting.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="close-btn"
+        aria-label="Close Modal"
+        (click)="closePromotionModal()"
+      >
+        ✕
+      </button>
+
+    </div>
+
+    <!-- Body -->
+    <div class="modal-body">
+
+      <!-- Messages -->
+      <div class="alert alert-error" *ngIf="errorMessage">
+        ⚠️ {{ errorMessage }}
+      </div>
+
+      <div class="alert alert-success" *ngIf="successMessage">
+        ✅ {{ successMessage }}
+      </div>
+
+      <div class="form-row">
+
+        <div class="form-group">
+
+          <label for="academicYearSelect">
+            Academic Year
+          </label>
+
+          <select
+            id="academicYearSelect"
+            class="form-control"
+            [(ngModel)]="promotionFromYearId"
+            (ngModelChange)="onAcademicYearChange()">
+
+            <option [ngValue]="null">
+              Select Academic Year
+            </option>
+
+            <option
+              *ngFor="let year of academicYears"
+              [ngValue]="year.academicYearId">
+
+              {{ year.yearLabel }}
+
+            </option>
+
+          </select>
+
+        </div>
+
+        <div class="form-group">
+
+          <label for="classSelect">
+            Class
+          </label>
+
+          <select
+            id="classSelect"
+            class="form-control"
+            [(ngModel)]="promotionSelectedClassId"
+            (ngModelChange)="onClassChange()">
+
+            <option [ngValue]="null">
+              Select Class
+            </option>
+
+            <option
+              *ngFor="let cls of filteredClasses"
+              [ngValue]="cls.classId">
+
+              {{ cls.className }}
+
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+      <!-- Loading -->
+      <div class="loading-state" *ngIf="loading">
+        Loading…
+      </div>
+
+      <!-- Student review list -->
+      <div class="student-list" *ngIf="!loading && students.length">
+
+        <div class="promotion-note">
+          <span>ℹ️</span>
+          By default every student is promoted to the next class. Mark a student as
+          "Detain" to repeat their current class, "Deactivate" to mark them inactive,
+          or check "Double Promotion" to skip an extra class.
+        </div>
+
+        <div class="student-row student-row-header">
+          <span class="col-name">Student</span>
+          <span class="col-class">Current Class</span>
+          <span class="col-status">Status</span>
+          <span class="col-double">Double Promotion</span>
+        </div>
+
+        <div class="student-row" *ngFor="let row of students">
+
+          <span class="col-name">{{ row.name }}</span>
+          <span class="col-class">{{ row.currentClass }}</span>
+
+          <span class="col-status">
+            <select
+              class="form-control form-control-sm"
+              [ngModel]="row.status"
+              (ngModelChange)="setStudentStatus(row, $event)">
+
+              <option value="active">Promote</option>
+              <option value="failed">Detain</option>
+              <option value="inactive">Deactivate</option>
+
+            </select>
+          </span>
+
+          <span class="col-double">
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                [checked]="row.doublePromotion"
+                [disabled]="row.status !== 'active'"
+                (change)="toggleDoublePromotion(row)"
+              />
+              Double
+            </label>
+
+            <input
+              *ngIf="row.doublePromotion"
+              type="text"
+              class="form-control form-control-sm target-input"
+              placeholder="Target class (optional)"
+              [(ngModel)]="row.doublePromotionTarget"
+            />
+          </span>
+
+        </div>
+
+      </div>
+
+      <div class="empty-state" *ngIf="!loading && promotionSelectedClassId && !students.length && !errorMessage">
+        No students found for this class.
+      </div>
+
+      <!-- Results -->
+      <div class="results-list" *ngIf="promotionResults.length">
+        <h4>Results</h4>
+        <div class="result-row" *ngFor="let r of promotionResults">
+          <span>Student {{ r.studentId }}</span>
+          <span>{{ r.status || (r.mode + ': ' + r.from + ' → ' + r.to) }}</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer">
+
+      <button
+        type="button"
+        class="btn-secondary"
+        (click)="closePromotionModal()">
+
+        Cancel
+
+      </button>
+
+      <button
+        type="button"
+        class="btn-primary"
+        [disabled]="!promotionFromYearId || !promotionSelectedClassId || !students.length || promoting"
+        (click)="handlePromotion()">
+
+        {{ promoting ? 'Promoting…' : '🚀 Promote Students' }}
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

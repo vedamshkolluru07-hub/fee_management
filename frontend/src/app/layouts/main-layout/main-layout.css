@@ -1,0 +1,150 @@
+/* src/app/layouts/main-layout/main-layout.css */
+
+.main-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg-page);
+  overflow-x: hidden;
+  transition: background 0.25s ease;
+}
+
+/* ── HEADER (FIXED) ── */
+app-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 70px;
+  width: 100%;
+  z-index: var(--z-header);
+}
+
+/* NOTE: app-sidebar's own positioning (fixed, width 0→260px, backdrop)
+   lives entirely in sidebar.css now. Previously this file *also* set
+   position/transform on the <app-sidebar> host element, which meant the
+   sidebar was being positioned by two independent, uncoordinated
+   mechanisms at once (host transform here + inner width transition in
+   sidebar.css). That duplication is removed — this file only controls
+   how the page content reacts to the sidebar being open. */
+
+/* ── PAGE WRAPPER ── */
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding-top: 70px;
+  transition: margin-left 0.3s ease;
+  min-height: 100vh;
+}
+
+@media (min-width: 769px) {
+  .page-wrapper.sidebar-open,
+  .page-wrapper.sidebar-pinned { margin-left: 260px; }
+}
+
+/* ── MAIN CONTENT ── */
+.content {
+  flex: 1;
+  padding: 20px 24px;
+  background: var(--bg-page);
+  display: flex;
+  flex-direction: column;
+  transition: background 0.25s ease;
+}
+
+/* ── FOOTER ── */
+.footer {
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  text-align: center;
+  padding: 14px 10px;
+  border-top: 2px solid var(--primary);
+  display: none;
+}
+
+.footer.show { display: block; }
+
+.footer-content p { margin: 4px 0; font-size: 13px; }
+
+.developer { color: var(--primary); font-weight: 600; }
+
+/* ── WATERMARK ── */
+#watermark {
+  position: fixed;
+  bottom: 20px; right: 20px;
+  background: rgba(0,0,0,0.88);
+  color: #00f5d4;
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: bold;
+  z-index: var(--z-toast);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px) scale(0.95);
+  transition: 0.3s ease;
+}
+
+#watermark.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+/* ── CALENDAR REMINDER PANEL ── */
+.calendar-reminder-panel {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  width: 300px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  z-index: 9000;
+  overflow: hidden;
+}
+
+.reminder-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--primary);
+  color: white;
+}
+
+.reminder-header h4 { margin: 0; font-size: 14px; }
+.reminder-header button {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0;
+  box-shadow: none;
+  transform: none;
+}
+
+.reminder-body { padding: 14px 16px; }
+.reminder-body .title { font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+.reminder-body .message { font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; }
+.reminder-body .meta { font-size: 12px; color: var(--text-muted); }
+
+.reminder-actions {
+  display: flex;
+  gap: 8px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+.reminder-actions button {
+  flex: 1;
+  font-size: 13px;
+  padding: 7px 10px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .page-wrapper { padding-top: 70px; margin-left: 0 !important; }
+  .content { padding: 12px 16px; }
+}

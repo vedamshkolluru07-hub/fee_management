@@ -1,0 +1,68 @@
+<div class="auth-card auth-card--sm">
+
+  <h2 class="auth-card__title">Welcome Back</h2>
+  <p class="auth-card__subtitle">Login to your account</p>
+
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+    <!-- Identifier -->
+    <div class="form-group">
+      <label for="identifier">Username or Email</label>
+      <input
+        id="identifier"
+        type="text"
+        formControlName="identifier"
+        placeholder="Enter username or email"
+      />
+
+      @if (f['identifier'].touched && f['identifier'].invalid) {
+        <small class="field-error">Identifier is required</small>
+      }
+    </div>
+
+    <!-- Password -->
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input
+        id="password"
+        type="password"
+        formControlName="password"
+        placeholder="Enter password"
+      />
+
+      @if (f['password'].touched && f['password'].invalid) {
+        <small class="field-error">Password must be at least 6 characters</small>
+      }
+    </div>
+
+    <!-- Backend Error -->
+    @if (errorMessage) {
+      <div class="alert alert-error">{{ errorMessage }}</div>
+    }
+
+    <!-- Submit Button -->
+    <button type="submit" [disabled]="loading">
+      @if (loading) {
+        Logging in...
+      } @else {
+        Login
+      }
+    </button>
+
+  </form>
+
+  <div class="auth-card__footer">
+    Don't have an account?
+    <a routerLink="/register">Register</a>
+  </div>
+
+  <div class="auth-card__footer">
+    <a routerLink="/reset-password">Forgot password?</a>
+  </div>
+
+  <!-- <div class="auth-card__footer">
+    Need an admin account?
+    <a routerLink="/register-admin">Create Admin</a>
+  </div> -->
+
+</div>

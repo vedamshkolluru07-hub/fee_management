@@ -1,0 +1,63 @@
+<div class="editor-page">
+  <header class="editor-header">
+    <div>
+      <h2>Home Page Editor</h2>
+      <p>Drag blocks to position them. Changes save as draft until you Publish.</p>
+    </div>
+    <div class="editor-actions">
+      <button type="button" class="btn-secondary" (click)="discardDraft()" [disabled]="saving()">Discard changes</button>
+      <button type="button" class="btn-primary" (click)="publish()" [disabled]="saving()">
+        {{ saving() ? 'Working...' : 'Publish' }}
+      </button>
+    </div>
+  </header>
+
+  <div *ngIf="message()" class="editor-message">{{ message() }}</div>
+
+  <div class="editor-toolbar">
+    <div class="toolbar-group">
+      <input type="text" [(ngModel)]="newTextValue" placeholder="New text block content..." />
+      <button type="button" class="btn-secondary" (click)="addTextBlock()">+ Add text block</button>
+    </div>
+    <div class="toolbar-group">
+      <label class="btn-secondary file-label">
+        + Add image block
+        <input type="file" accept="image/*" multiple (change)="onImagesSelected($event)" hidden />
+      </label>
+    </div>
+  </div>
+
+  <div *ngIf="loading()" class="editor-loading">Loading...</div>
+
+  <div #canvas class="editor-canvas" *ngIf="!loading()">
+    <div
+      *ngFor="let block of blocks()"
+      class="editor-block"
+      [class.selected]="selectedBlockId() === block.id"
+      [style.left.%]="block.pos_x"
+      [style.top.%]="block.pos_y"
+      [style.width.%]="block.width"
+      [style.height.%]="block.height"
+      [style.z-index]="block.z_index"
+      (mousedown)="startDrag($event, block)"
+    >
+      <button type="button" class="block-delete" (click)="deleteBlock(block); $event.stopPropagation()">✕</button>
+
+      <ng-container *ngIf="block.block_type === 'text'; else imageBlockTpl">
+        <textarea
+          class="block-text-edit"
+          [value]="block.text_content"
+          (input)="updateTextContent(block, $any($event.target).value)"
+          (mousedown)="$event.stopPropagation()"
+        ></textarea>
+      </ng-container>
+
+      <ng-template #imageBlockTpl>
+        <div class="block-image-preview">
+          <img *ngIf="block.images?.[0]" [src]="block.images[0].url" alt="" />
+          <span *ngIf="block.images.length > 1" class="image-count">{{ block.images.length }} images</span>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

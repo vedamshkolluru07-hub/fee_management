@@ -1,0 +1,537 @@
+<div class="calendar-wrapper" [class.dark-theme]="darkMode">
+
+  <!-- ============================================================
+       HEADER
+  ============================================================= -->
+  <header class="calendar-header">
+
+    <div class="header-row header-row--left">
+
+      <div class="nav-group" role="group" aria-label="Calendar navigation">
+        <button class="icon-btn" type="button" title="Previous" aria-label="Previous period" (click)="goToPrevious()">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+
+        <button class="today-btn" type="button" title="Jump to today" (click)="goToToday()">Today</button>
+
+        <button class="icon-btn" type="button" title="Next" aria-label="Next period" (click)="goToNext()">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+
+      <h1 class="calendar-title">{{ currentViewTitle }}</h1>
+    </div>
+
+    <div class="header-row header-row--center">
+
+      <div class="select-wrap">
+        <select
+          class="calendar-select"
+          aria-label="Academic year"
+          [value]="selectedAcademicYear"
+          (change)="onYearChange($any($event.target).value)"
+        >
+          <option *ngFor="let y of academicYears; trackBy: trackByYear" [value]="y">
+            Academic {{ y }} - {{ y + 1 }}
+          </option>
+        </select>
+      </div>
+
+      <div class="select-wrap">
+        <select
+          class="calendar-select"
+          aria-label="Month"
+          [value]="selectedMonth"
+          (change)="onMonthChange($any($event.target).value)"
+        >
+          <option *ngFor="let m of months; let i = index" [value]="i">
+            {{ m }}
+          </option>
+        </select>
+      </div>
+
+    </div>
+
+    <div class="header-row header-row--right">
+
+      <div class="view-tabs" role="tablist" aria-label="Calendar view">
+        <button role="tab" [attr.aria-selected]="viewMode === 'month'" (click)="setView('month')" [class.active]="viewMode === 'month'">Month</button>
+        <button role="tab" [attr.aria-selected]="viewMode === 'week'" (click)="setView('week')" [class.active]="viewMode === 'week'">Week</button>
+        <button role="tab" [attr.aria-selected]="viewMode === 'day'" (click)="setView('day')" [class.active]="viewMode === 'day'">Day</button>
+        <button role="tab" [attr.aria-selected]="viewMode === 'year'" (click)="setView('year')" [class.active]="viewMode === 'year'">Year</button>
+        <button role="tab" [attr.aria-selected]="viewMode === 'backend'" (click)="setView('backend')" [class.active]="viewMode === 'backend'">Backend</button>
+      </div>
+
+      <button class="icon-btn theme-toggle" type="button" title="Toggle dark mode" [attr.aria-label]="darkMode ? 'Switch to light mode' : 'Switch to dark mode'" (click)="toggleDarkMode()">
+        <svg *ngIf="!darkMode" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg *ngIf="darkMode" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M20.4 14.7A8.5 8.5 0 1 1 9.3 3.6a7 7 0 0 0 11.1 11.1z"/></svg>
+      </button>
+
+      <button class="primary-btn new-event-btn" type="button" title="Create a new event" (click)="createNewEvent()">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        <span>New event</span>
+      </button>
+
+    </div>
+
+  </header>
+
+  <!-- ============================================================
+       REMINDER MODAL
+  ============================================================= -->
+  <div class="modal-overlay" *ngIf="showReminderDialog && activeReminder as r" (click)="closeReminderDialog()">
+
+    <div class="modal-box reminder-box" (click)="$event.stopPropagation()">
+
+      <div class="modal-header modal-header--reminder">
+        <div class="modal-header-title">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+          <h2>Reminder</h2>
+        </div>
+        <button class="icon-btn" type="button" aria-label="Close reminder" (click)="closeReminderDialog()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-content">
+        <h3>{{ r.title }}</h3>
+        <p>{{ r.message }}</p>
+        <div class="stage-badge">{{ r.reminder_stage }} day(s) out</div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="ghost-btn" type="button" (click)="closeReminderDialog()">Dismiss</button>
+        <button class="primary-btn" type="button" (click)="openEventFromReminder()">Open event</button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ============================================================
+       CREATE / EDIT EVENT MODAL  (createEvent / updateEvent)
+  ============================================================= -->
+  <div class="modal-overlay" *ngIf="showEventModal" (click)="closeEventModal()">
+
+    <div class="modal-box" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <div class="modal-header-title">
+          <h2>{{ modalMode === 'edit' ? 'Edit event' : 'New event' }}</h2>
+        </div>
+        <button class="icon-btn" type="button" aria-label="Close" (click)="closeEventModal()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form class="modal-content form-grid" (ngSubmit)="submitEventForm()">
+
+        <label class="field">
+          <span class="field-label">Title</span>
+          <input class="field-input" type="text" name="title" [(ngModel)]="eventForm.title" placeholder="Event title" required />
+        </label>
+
+        <label class="field">
+          <span class="field-label">Description</span>
+          <textarea class="field-input" name="description" rows="3" [(ngModel)]="eventForm.description" placeholder="Add details"></textarea>
+        </label>
+
+        <div class="field-row">
+          <label class="field">
+            <span class="field-label">Starts</span>
+            <input class="field-input" type="datetime-local" name="start_time" [(ngModel)]="eventForm.start_time" required />
+          </label>
+
+          <label class="field">
+            <span class="field-label">Ends</span>
+            <input class="field-input" type="datetime-local" name="end_time" [(ngModel)]="eventForm.end_time" />
+          </label>
+        </div>
+
+        <div class="modal-actions">
+          <button class="ghost-btn" type="button" (click)="closeEventModal()">Cancel</button>
+          <button class="primary-btn" type="submit" [disabled]="savingEvent">
+            {{ savingEvent ? 'Saving…' : (modalMode === 'edit' ? 'Save changes' : 'Create event') }}
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+  <!-- ============================================================
+       EVENT DETAIL MODAL  (getEventById)
+  ============================================================= -->
+  <div class="modal-overlay" *ngIf="showDetailModal" (click)="closeDetailModal()">
+
+    <div class="modal-box" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <div class="modal-header-title"><h2>Event details</h2></div>
+        <button class="icon-btn" type="button" aria-label="Close" (click)="closeDetailModal()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-content" *ngIf="!detailLoading && viewingEvent">
+        <h3>{{ viewingEvent.title }}</h3>
+        <div class="detail-time">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          {{ viewingEvent.start_time | date:'medium' }}
+        </div>
+        <p class="detail-description">{{ viewingEvent.description || 'No description provided.' }}</p>
+      </div>
+
+      <div class="modal-content" *ngIf="detailLoading">
+        <div class="loading-line">Loading event…</div>
+      </div>
+
+      <div class="modal-actions" *ngIf="!detailLoading && viewingEvent">
+        <button class="ghost-btn danger-text" type="button" (click)="deleteEvent(viewingEvent.event_id); closeDetailModal()">Delete</button>
+        <button class="ghost-btn" type="button" (click)="openPostponeModal(viewingEvent); closeDetailModal()">Postpone</button>
+        <button class="primary-btn" type="button" (click)="editEvent(viewingEvent); closeDetailModal()">Edit</button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ============================================================
+       POSTPONE MODAL  (postponeEvent)
+  ============================================================= -->
+  <div class="modal-overlay" *ngIf="showPostponeModal" (click)="closePostponeModal()">
+
+    <div class="modal-box" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <div class="modal-header-title"><h2>Postpone event</h2></div>
+        <button class="icon-btn" type="button" aria-label="Close" (click)="closePostponeModal()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form class="modal-content form-grid" (ngSubmit)="submitPostpone()">
+
+        <p class="modal-subtitle" *ngIf="postponeTarget">{{ postponeTarget.title }}</p>
+
+        <label class="field">
+          <span class="field-label">New date &amp; time</span>
+          <input class="field-input" type="datetime-local" name="new_start_time" [(ngModel)]="postponeForm.new_start_time" required />
+        </label>
+
+        <label class="field">
+          <span class="field-label">Reason</span>
+          <input class="field-input" type="text" name="reason" [(ngModel)]="postponeForm.reason" placeholder="Optional reason" />
+        </label>
+
+        <div class="modal-actions">
+          <button class="ghost-btn" type="button" (click)="closePostponeModal()">Cancel</button>
+          <button class="primary-btn" type="submit" [disabled]="postponing">
+            {{ postponing ? 'Postponing…' : 'Confirm postpone' }}
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+  <!-- ============================================================
+       POSTPONEMENT HISTORY MODAL  (getPostponementHistory)
+  ============================================================= -->
+  <div class="modal-overlay" *ngIf="showHistoryModal" (click)="closeHistoryModal()">
+
+    <div class="modal-box" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <div class="modal-header-title"><h2>Postponement history</h2></div>
+        <button class="icon-btn" type="button" aria-label="Close" (click)="closeHistoryModal()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-content">
+
+        <div class="loading-line" *ngIf="historyLoading">Loading history…</div>
+
+        <ul class="history-list" *ngIf="!historyLoading">
+          <li class="history-item" *ngFor="let h of postponementHistory">
+            <div class="history-dot"></div>
+            <div>
+              <div class="history-date">Moved to {{ h.new_start_time | date:'medium' }}</div>
+              <div class="history-reason" *ngIf="h.reason">{{ h.reason }}</div>
+            </div>
+          </li>
+        </ul>
+
+        <div class="empty-state" *ngIf="!historyLoading && postponementHistory.length === 0">
+          No postponements recorded for this event
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ============================================================
+       BODY
+  ============================================================= -->
+  <div class="calendar-body">
+
+    <div class="loading-bar" *ngIf="loading"></div>
+
+    <!-- MONTH VIEW -->
+    <div *ngIf="viewMode === 'month'" class="month-view">
+
+      <div class="weekdays-row">
+        <div class="weekday" *ngFor="let d of weekdays">{{ d }}</div>
+      </div>
+
+      <div class="month-grid">
+
+        <div
+          class="day-cell"
+          *ngFor="let day of calendarDays; trackBy: trackByDate"
+          [class.other-month]="!day.currentMonth"
+          [class.today]="day.isToday"
+          [class.selected]="day.isSelected"
+          (click)="onDaySelect(day.date)"
+        >
+
+          <div class="date-number">
+            {{ day.dayNumber }}
+          </div>
+
+          <div class="events-list">
+
+            <ng-container *ngFor="let event of (day.events || []).slice(0, 3)">
+              <div class="event-item" (click)="openEvent(event, $event)">
+                <div class="event-dot"></div>
+                <span class="event-title">{{ event.title }}</span>
+              </div>
+            </ng-container>
+
+            <div class="more-events" *ngIf="day.events.length > 3">
+              +{{ day.events.length - 3 }} more
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- WEEK VIEW -->
+    <div *ngIf="viewMode === 'week'" class="week-view">
+
+      <div class="week-grid">
+
+        <div class="week-column" *ngFor="let day of weekDays" [class.today-col]="day.isToday">
+
+          <div class="week-header">
+            <div class="week-day-name">{{ day.name }}</div>
+            <div class="week-date" [class.today]="day.isToday">{{ day.date | date:'d' }}</div>
+          </div>
+
+          <div class="week-events">
+
+            <div class="week-event" *ngFor="let event of day.events" (click)="openEvent(event, $event)">
+              <div class="week-event-title">{{ event.title }}</div>
+              <div class="week-event-time">{{ event.start_time | date:'shortTime' }}</div>
+            </div>
+
+            <div class="empty-state empty-state--small" *ngIf="day.events.length === 0">No events</div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- DAY VIEW -->
+    <div *ngIf="viewMode === 'day'" class="day-view">
+
+      <div class="day-header">
+        <h2>{{ selectedDate | date:'fullDate' }}</h2>
+
+        <div class="day-header-actions">
+          <button class="ghost-btn" type="button" (click)="toggleSelectMode()">
+            {{ selectMode ? 'Cancel selection' : 'Select' }}
+          </button>
+          <button
+            class="danger-btn"
+            type="button"
+            *ngIf="selectMode"
+            [disabled]="selectedEventIds.size === 0"
+            (click)="deleteSelectedEvents()"
+          >
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
+            Delete selected ({{ selectedEventIds.size }})
+          </button>
+        </div>
+      </div>
+
+      <div class="day-events">
+
+        <div class="day-event-item" *ngFor="let e of selectedDayEvents; trackBy: trackByEventId" [class.is-selected]="isEventSelected(e.event_id)">
+
+          <div class="event-left">
+
+            <input
+              class="event-checkbox"
+              type="checkbox"
+              *ngIf="selectMode"
+              [checked]="isEventSelected(e.event_id)"
+              (change)="toggleEventSelected(e.event_id)"
+              [attr.aria-label]="'Select ' + e.title"
+            />
+
+            <div class="event-time">
+              {{ e.start_time | date:'shortTime' }}
+            </div>
+
+            <div>
+              <div class="event-title">{{ e.title }}</div>
+              <div class="event-description">{{ e.description }}</div>
+            </div>
+
+          </div>
+
+          <div class="actions" *ngIf="!selectMode">
+
+            <button class="action-btn action-btn--ghost" type="button" title="View" aria-label="View event" (click)="openEvent(e, $event)">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+
+            <button class="action-btn action-btn--ghost" type="button" title="Edit" aria-label="Edit event" (click)="editEvent(e, $event)">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+            </button>
+
+            <button class="action-btn action-btn--amber" type="button" title="Postpone" aria-label="Postpone event" (click)="openPostponeModal(e, $event)">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+            </button>
+
+            <button class="action-btn action-btn--ghost" type="button" title="Postponement history" aria-label="View postponement history" (click)="viewPostponementHistory(e.event_id, $event)">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/></svg>
+            </button>
+
+            <button class="action-btn action-btn--danger" type="button" title="Delete" aria-label="Delete event" (click)="deleteEvent(e.event_id, $event)">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
+            </button>
+
+          </div>
+
+        </div>
+
+        <div class="empty-state" *ngIf="selectedDayEvents.length === 0">
+          No events scheduled for this day
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- YEAR VIEW -->
+    <div *ngIf="viewMode === 'year'" class="year-view">
+
+      <div class="year-grid">
+
+        <div class="month-box" *ngFor="let m of months; let i = index" (click)="openMonthView(i)">
+          <div class="month-name">{{ m }}</div>
+          <div class="month-event-count">{{ getMonthEventCount(i) }} events</div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- BACKEND VIEW -->
+    <div *ngIf="viewMode === 'backend'" class="backend-view">
+
+      <div class="panel">
+
+        <div class="panel-header">
+          <span>Upcoming 15 days</span>
+          <span class="panel-count">{{ upcomingEvents.length }}</span>
+        </div>
+
+        <div class="panel-list">
+
+          <div class="backend-item" *ngFor="let e of upcomingEvents" (click)="openEvent(e)">
+            <div class="backend-title">{{ e.title }}</div>
+            <div class="backend-date">{{ e.start_time | date:'mediumDate' }}</div>
+          </div>
+
+          <div class="empty-state" *ngIf="upcomingEvents.length === 0">
+            No upcoming events
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="panel">
+
+        <div class="panel-header">
+          <span>Login alerts</span>
+          <span class="panel-count panel-count--amber">{{ alerts.length }}</span>
+        </div>
+
+        <div class="panel-list">
+
+          <div class="backend-item backend-item--alert" *ngFor="let e of alerts">
+            <div class="backend-title">{{ e.title }}</div>
+          </div>
+
+          <div class="empty-state" *ngIf="alerts.length === 0">
+            No alerts
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="panel">
+
+        <div class="panel-header">
+          <span>Postponements</span>
+        </div>
+
+        <div class="panel-list panel-list--center">
+
+          <div *ngIf="recentCompleted; else noData" class="recent-completed">
+            <div class="backend-title">{{ recentCompleted?.title }}</div>
+            <div class="backend-date">{{ recentCompleted?.completed_at | date:'medium' }}</div>
+          </div>
+
+          <ng-template #noData>
+            <div class="empty-state">No data available</div>
+          </ng-template>
+
+          <button class="ghost-btn cleanup-btn" type="button" (click)="cleanupOldPostponements()">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
+            Clean up old postponements
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- FAB -->
+  <button class="fab-add-event" type="button" title="Create a new event" aria-label="Create a new event" (click)="createNewEvent()">
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+  </button>
+
+</div>

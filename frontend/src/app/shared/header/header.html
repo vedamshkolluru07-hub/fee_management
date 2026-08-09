@@ -1,0 +1,109 @@
+<!-- src/app/shared/header/header.html -->
+<header class="header">
+
+  <!-- ================= LOGO (click → dashboard) ================= -->
+  <div class="logo" (click)="goToDashboard()" role="button" tabindex="0"
+       (keydown.enter)="goToDashboard()" title="Go to Dashboard">
+    <img src="assets/header/header.png" alt="SS Model High School Logo" />
+    <h1>SS Model High School</h1>
+  </div>
+
+  <!-- ================= SEARCH BAR ================= -->
+  <div class="search-bar">
+    <form #searchForm="ngForm" (ngSubmit)="onSearch(searchForm)" class="search-form" role="search">
+
+      <!-- Academic Year -->
+      <select name="academicYearId" ngModel (change)="onAcademicYearChange($event)" aria-label="Academic Year">
+        <option value="">Academic Year</option>
+        <option *ngFor="let year of academicYears$ | async" [value]="year.academicYearId">
+          {{ year.yearLabel }}
+        </option>
+      </select>
+
+      <!-- Class -->
+      <select name="classId" ngModel (change)="onClassChange($event)" aria-label="Class">
+        <option value="">Class</option>
+        <option *ngFor="let cls of classes$ | async" [value]="cls.classId">
+          {{ cls.className }}
+        </option>
+      </select>
+
+      <!-- Section -->
+      <select name="section" ngModel aria-label="Section">
+        <option value="">Section</option>
+        <option value="A">A</option>
+        <option value="B">B</option>
+      </select>
+
+      <!-- Student Name -->
+      <input type="text" name="student_name" ngModel placeholder="Student Name" autocomplete="off" aria-label="Student Name" />
+
+      <!-- Parent Name -->
+      <input type="text" name="parent_name" ngModel placeholder="Parent Name" autocomplete="off" aria-label="Parent Name" />
+
+      <!-- Search Button -->
+      <button type="submit" aria-label="Search">
+        <i class="fas fa-search" aria-hidden="true"></i>
+        <span>Search</span>
+      </button>
+
+    </form>
+  </div>
+
+  <!-- ================= USER ACTIONS ================= -->
+  <div class="user-actions">
+
+    <!-- Theme Switcher -->
+    <div class="theme-switcher" [class.open]="themeMenuOpen">
+      <button type="button" class="icon-btn theme-toggle-btn" (click)="toggleThemeMenu()"
+              title="Switch Theme" aria-label="Switch Theme" [attr.aria-expanded]="themeMenuOpen">
+        <i class="fas fa-palette" aria-hidden="true"></i>
+        <span>Theme</span>
+      </button>
+      <div class="theme-dropdown" *ngIf="themeMenuOpen" role="menu">
+        <button
+          *ngFor="let t of themes"
+          type="button"
+          class="theme-option"
+          role="menuitemradio"
+          [attr.aria-checked]="currentTheme === t.value"
+          [class.active]="currentTheme === t.value"
+          (click)="applyTheme(t.value)"
+        >
+          <span class="theme-icon">{{ t.icon }}</span>
+          <span>{{ t.label }}</span>
+          <i class="fas fa-check" *ngIf="currentTheme === t.value" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Settings -->
+    <!-- <button type="button" class="icon-btn" title="Settings" aria-label="Settings">
+      <i class="fas fa-cog" aria-hidden="true"></i>
+      <span>Settings</span>
+    </button> -->
+
+    <!-- Role / Username -->
+    <button
+      type="button"
+      class="role-btn"
+      (click)="onRoleClick()"
+      (dblclick)="onRoleDoubleClick()"
+      title="Click to open sidebar · Double-click to pin"
+      [attr.aria-label]="'Open menu — logged in as ' + username"
+    >
+      <span class="username">{{ username }}</span>
+      <span class="separator" aria-hidden="true">|</span>
+      <span class="user-role">{{ userRole }}</span>
+      <i class="fas fa-chevron-down" aria-hidden="true"></i>
+    </button>
+
+    <!-- Logout -->
+    <button type="button" class="logout-btn" (click)="logout()" aria-label="Logout">
+      <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+      <span>Logout</span>
+    </button>
+
+  </div>
+
+</header>

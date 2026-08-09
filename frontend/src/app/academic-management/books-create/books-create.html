@@ -1,0 +1,63 @@
+<!-- books-create.html -->
+<div class="page-wrap">
+
+  <div class="page-header">
+    <div class="header-left">
+      <button class="btn-ghost" (click)="goToView()">← Back to View</button>
+      <h1 class="page-title">Create Books</h1>
+    </div>
+    <button class="btn-add" (click)="addRow()">+ Add Row</button>
+  </div>
+
+  <!-- Context -->
+  <div class="context-bar" *ngIf="selectedYear">
+    <span class="context-label">Academic Year:</span>
+    <span class="context-value">{{ selectedYear.yearLabel }}</span>
+  </div>
+
+  <!-- Class selector -->
+  <div class="field-row">
+    <label class="field-label">Class <span class="req">*</span></label>
+    <select class="select-input class-select" [(ngModel)]="selectedClassId">
+      <option [ngValue]="null" disabled>Select class…</option>
+      <option *ngFor="let c of classes" [ngValue]="c.classId">{{ c.className }}</option>
+    </select>
+  </div>
+
+  <div class="alert alert-success" *ngIf="successMessage">{{ successMessage }}</div>
+  <div class="alert alert-error"   *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <div class="table-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Book Type <span class="req">*</span></th>
+          <th>Book Amount</th>
+          <th>Remove</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let draft of drafts; let i = index">
+          <td class="row-num">{{ i + 1 }}</td>
+          <td>
+            <input class="cell-input" type="text" placeholder="e.g. Textbook" [(ngModel)]="draft.bookType" />
+          </td>
+          <td>
+            <input class="cell-input" type="number" placeholder="0.00" [(ngModel)]="draft.bookAmount" />
+          </td>
+          <td class="center-cell">
+            <button class="btn-remove" (click)="removeRow(i)" [disabled]="drafts.length === 1">✕</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer-actions">
+    <button class="btn-save" (click)="saveAll()" [disabled]="saving || !isValid()">
+      {{ saving ? 'Saving…' : 'Save All' }}
+    </button>
+  </div>
+
+</div>

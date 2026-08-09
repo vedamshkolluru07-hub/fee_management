@@ -1,0 +1,178 @@
+/* academic-years-create.css */
+/* ============================================================
+   Shared component CSS — maps local vars to global theme vars
+   This :host block overrides the old hardcoded dark palette.
+   All components inherit from :root [data-theme="..."]
+============================================================ */
+:host {
+  --bg:           var(--bg-page);
+  --surface:      var(--bg-surface);
+  --border:       var(--border-color);
+  --accent:       var(--primary);
+  --accent-hover: var(--primary-hover);
+  --danger:       var(--danger);
+  --success:      var(--success);
+  --text:         var(--text-primary);
+  --muted:        var(--text-muted);
+  --radius:       10px;
+  display: block;
+  font-family: 'Roboto', system-ui, sans-serif;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.page-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.page-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.btn-ghost {
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--muted);
+  padding: 0.4rem 0.9rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.82rem;
+  transition: color 0.2s, border-color 0.2s;
+}
+.btn-ghost:hover { color: var(--text-primary); border-color: var(--accent); }
+
+.btn-add {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1.1rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+.btn-add:hover { background: var(--accent-hover); }
+
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+  font-size: 0.88rem;
+}
+.alert-success { background: rgba(62,207,142,0.12); color: var(--success); border: 1px solid rgba(62,207,142,0.3); }
+.alert-error   { background: rgba(224,92,92,0.12);  color: var(--danger);  border: 1px solid rgba(224,92,92,0.3);  }
+
+.table-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.82rem;
+}
+
+.data-table thead tr {
+  background: rgba(91,106,240,0.08);
+}
+
+.data-table th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.data-table td {
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
+}
+
+.data-table tbody tr:last-child td { border-bottom: none; }
+.data-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+.row-num { color: var(--muted); font-size: 0.75rem; }
+
+.cell-input {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.82rem;
+  width: 100%;
+  transition: border-color 0.2s;
+}
+.cell-input:focus { outline: none; border-color: var(--accent); }
+
+.check-input { accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; }
+
+.center-cell { text-align: center; }
+
+.btn-remove {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--danger);
+  cursor: pointer;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  padding: 0.2rem 0.5rem;
+  transition: background 0.2s;
+}
+.btn-remove:hover:not(:disabled) { background: rgba(224,92,92,0.12); }
+.btn-remove:disabled { color: var(--border-color); cursor: not-allowed; }
+
+.req { color: var(--accent); margin-left: 2px; }
+
+.footer-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.25rem;
+}
+
+.btn-save {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 0.65rem 1.8rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background 0.2s, opacity 0.2s;
+}
+.btn-save:hover:not(:disabled) { background: var(--accent-hover); }
+.btn-save:disabled { opacity: 0.5; cursor: not-allowed; }

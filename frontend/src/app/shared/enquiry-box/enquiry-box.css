@@ -1,0 +1,82 @@
+.enquiry-box {
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 420px;
+  box-shadow: var(--shadow, 0 2px 8px rgba(0,0,0,0.06));
+}
+
+.enquiry-title {
+  margin: 0 0 4px;
+  font-size: 1.25rem;
+  color: var(--text-primary, #111827);
+}
+
+.enquiry-subtitle {
+  margin: 0 0 16px;
+  font-size: 0.9rem;
+  color: var(--text-secondary, #4b5563);
+}
+
+.enquiry-form .field {
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.enquiry-form label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary, #4b5563);
+}
+
+.enquiry-form input,
+.enquiry-form select,
+.enquiry-form textarea {
+  border: 1px solid var(--input-border, #d1d5db);
+  background: var(--input-bg, #fff);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  color: var(--text-primary, #111827);
+  font-family: inherit;
+  resize: vertical;
+}
+
+.enquiry-error {
+  color: var(--danger, #dc2626);
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 11px;
+  background: var(--primary, #2563eb);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  padding: 8px 14px;
+  background: transparent;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.enquiry-success {
+  text-align: center;
+  padding: 12px 0;
+}

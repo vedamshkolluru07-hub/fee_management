@@ -1,0 +1,390 @@
+<!-- ================= STUDENT DETAILS ================= -->
+<section class="section">
+  <div><strong>Student ID:</strong> {{ student?.student_id }}</div>
+  <div><strong>First Name:</strong> {{ student?.student_name }}</div>
+  <div><strong>Last Name:</strong> {{ student?.sur_name }}</div>
+  <div><strong>Section:</strong> {{ student?.section }}</div>
+</section>
+
+<!-- ================= ACADEMIC DETAILS ================= -->
+<section class="section">
+  <h3>Academic Details</h3>
+  <div><strong>Academic Year ID:</strong> {{ selectedAcademicYear?.academicYearId }}</div>
+  <div><strong>Academic Year:</strong> {{ selectedAcademicYear?.yearLabel }}</div>
+  <div><strong>Start Date:</strong> {{ selectedAcademicYear?.startDate }}</div>
+  <div><strong>End Date:</strong> {{ selectedAcademicYear?.endDate }}</div>
+  <div><strong>Current Year:</strong> {{ selectedAcademicYear?.isCurrentYear ? 'Yes' : 'No' }}</div>
+  <div><strong>Connected:</strong> {{ selectedAcademicYear?.isConnected ? 'Yes' : 'No' }}</div>
+</section>
+
+<!-- ================= CLASS DETAILS ================= -->
+<section class="section">
+  <h3>Class Details</h3>
+  <div><strong>Class ID:</strong> {{ selectedClass?.classId }}</div>
+  <div><strong>Class Name:</strong> {{ selectedClass?.className }}</div>
+  <div><strong>Fee Amount:</strong> {{ selectedClass?.feeAmount }}</div>
+</section>
+
+<!-- ================= ERROR BANNER ================= -->
+<div class="alert alert-danger d-flex justify-content-between align-items-center" *ngIf="error">
+  <span>{{ error }}</span>
+  <button type="button" class="btn-close" (click)="clearError()"></button>
+</div>
+
+<div class="container-fluid">
+
+  <!-- Payment Summary -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Payment Summary</h5>
+      <button class="btn btn-sm btn-outline-secondary" (click)="refresh()" [disabled]="loading">
+        Refresh
+      </button>
+    </div>
+
+    <div class="card-body p-0">
+      <table class="table table-bordered mb-0" *ngIf="payment; else noPayment">
+        <thead class="table-light">
+          <tr>
+            <th>Payment ID</th>
+            <th>Concession</th>
+            <th>Total Paid</th>
+            <th>Pending Amount</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Updated</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>{{ payment.payment_id }}</td>
+            <td>{{ payment.concession | currency:'INR' }}</td>
+            <td>{{ payment.total_amount_paid | currency:'INR' }}</td>
+            <td>{{ payment.pending_amount | currency:'INR' }}</td>
+
+            <td>
+              <span class="badge"
+                [ngClass]="{
+                  'bg-warning': payment.payment_status==='PENDING',
+                  'bg-info': payment.payment_status==='PARTIAL',
+                  'bg-success': payment.payment_status==='PAID'
+                }">
+                {{ payment.payment_status }}
+              </span>
+            </td>
+
+            <td>{{ payment.created_at | date:'mediumDate' }}</td>
+            <td>{{ payment.updated_at | date:'mediumDate' }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <ng-template #noPayment>
+        <div class="text-center py-3">
+          {{ loading ? 'Loading payment...' : 'No payment found.' }}
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- Transaction History -->
+  <div class="card shadow-sm">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Transaction History</h5>
+      <span class="badge bg-primary">{{ totalTransactions }} Transactions</span>
+    </div>
+
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover table-bordered mb-0">
+
+          <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th>Transaction ID</th>
+              <th>Payment Method</th>
+              <th>Amount Paid</th>
+              <th>Remarks</th>
+              <th>Payment Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr *ngFor="let transaction of transactions; let i=index">
+
+              <td>{{ offset + i + 1 }}</td>
+
+              <td>{{ transaction.transaction_id }}</td>
+
+              <td class="text-capitalize">
+                {{ transaction.payment_method }}
+              </td>
+
+              <td>
+                {{ transaction.amount_paid | currency:'INR' }}
+              </td>
+
+              <td class="text-capitalize">
+                {{ transaction.remarks }}
+              </td>
+
+              <td>
+                {{ transaction.payment_date | date:'medium' }}
+              </td>
+
+              <td>
+                <button
+                  class="btn btn-sm btn-danger"
+                  [disabled]="reversing"
+                  (click)="reverseTransaction(transaction)">
+                  Reverse
+                </button>
+              </td>
+
+            </tr>
+
+
+            <tr *ngIf="transactions.length === 0">
+
+              <td colspan="7" class="text-center py-3">
+                {{ loading ? 'Loading transactions...' : 'No transactions found.' }}
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+
+
+    <div class="card-footer d-flex justify-content-between" *ngIf="totalTransactions > 0">
+
+      <button
+        class="btn btn-outline-primary"
+        (click)="previousPage()"
+        [disabled]="offset===0">
+
+        Previous
+
+      </button>
+
+
+      <span>
+        Showing {{ offset + 1 }} -
+        {{ offset + transactions.length }}
+        of {{ totalTransactions }}
+      </span>
+
+
+      <button
+        class="btn btn-outline-primary"
+        (click)="nextPage()"
+        [disabled]="offset + limit >= totalTransactions">
+
+        Next
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Payment Button -->
+<button class="btn btn-primary mt-3" (click)="showPaymentModal = true">
+  Payment
+</button>
+<!-- Print Button -->
+<button 
+  class="btn btn-success mt-3 ms-2"
+  (click)="openPrintBlock()">
+  Print
+</button>
+
+<!-- Payment Creation Modal -->
+<div class="modal-backdrop fade show" *ngIf="showPaymentModal"></div>
+
+<div class="modal d-block" tabindex="-1" *ngIf="showPaymentModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Create Tuition Payment</h5>
+        <button type="button" class="btn-close" (click)="showPaymentModal=false"></button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="paymentForm">
+          <div class="row">
+
+            <div class="col-md-6 mb-3">
+              <label>Student ID *</label>
+              <input type="text" class="form-control" formControlName="student_id" placeholder="Enter Student ID">
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Class ID *</label>
+              <input type="text" class="form-control" formControlName="class_id" placeholder="Enter Class ID">
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Academic Year ID *</label>
+              <input type="text" class="form-control" formControlName="academic_year_id" placeholder="Enter Academic Year ID">
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Payment Method *</label>
+              <select class="form-select" formControlName="payment_method">
+                <option value="">Select Method</option>
+                <option value="cash">Cash</option>
+                <option value="card">Card</option>
+                <option value="online">Online</option>
+              </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Amount Paid *</label>
+              <input type="number" class="form-control" formControlName="amount_paid" placeholder="Enter Amount">
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Transaction ID</label>
+              <input type="text" class="form-control" formControlName="transaction_id" placeholder="Enter Transaction ID">
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Payment Date</label>
+              <input type="date" class="form-control" formControlName="payment_date">
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Concession</label>
+              <input type="number" class="form-control" formControlName="concession" placeholder="Enter Concession Amount">
+            </div>
+
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="showPaymentModal=false">
+          Cancel
+        </button>
+
+        <button class="btn btn-primary" (click)="createPayment()" [disabled]="paymentForm.invalid || creating">
+          {{ creating ? 'Saving...' : 'Save Payment' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- ================= PRINT RECEIPT BLOCK ================= -->
+<div class="card mt-4 shadow-sm" *ngIf="showPrintBlock">
+  <div class="card-header d-flex justify-content-between align-items-center no-print">
+    <h5 class="mb-0">Payment Receipt Preview</h5>
+    <button class="btn btn-sm btn-danger" (click)="showPrintBlock=false">Close</button>
+  </div>
+
+  <div class="card-body" id="printSection">
+    <div class="text-center mb-4">
+      <h3 class="fw-bold">TUITION FEE RECEIPT</h3>
+      <p class="mb-1">Academic Fee Payment Confirmation</p>
+      <hr>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <h6 class="fw-bold">Student Details</h6>
+        <p class="mb-1"><strong>Student ID:</strong> {{ student?.student_id }}</p>
+        <p class="mb-1"><strong>Name:</strong> {{ student?.student_name }} {{ student?.sur_name }}</p>
+        <p class="mb-1"><strong>Section:</strong> {{ student?.section }}</p>
+      </div>
+
+      <div class="col-md-6">
+        <h6 class="fw-bold">Academic Details</h6>
+        <p class="mb-1"><strong>Academic Year:</strong> {{ selectedAcademicYear?.yearLabel }}</p>
+        <p class="mb-1"><strong>Class:</strong> {{ selectedClass?.className }}</p>
+        <p class="mb-1"><strong>Receipt Date:</strong> {{ payment?.created_at | date:'mediumDate' }}</p>
+      </div>
+    </div>
+
+    <hr>
+
+    <h6 class="fw-bold mb-3">Payment Summary</h6>
+
+    <table class="table table-bordered">
+      <tbody>
+        <tr>
+          <th width="40%">Payment ID</th>
+          <td>{{ payment?.payment_id }}</td>
+        </tr>
+        <tr>
+          <th>Total Fee Amount</th>
+          <td>{{ selectedClass?.feeAmount | currency:'INR' }}</td>
+        </tr>
+        <tr>
+          <th>Concession</th>
+          <td>{{ payment?.concession | currency:'INR' }}</td>
+        </tr>
+        <tr>
+          <th>Total Paid</th>
+          <td class="fw-bold text-success">{{ payment?.total_amount_paid | currency:'INR' }}</td>
+        </tr>
+        <tr>
+          <th>Pending Amount</th>
+          <td class="fw-bold text-danger">{{ payment?.pending_amount | currency:'INR' }}</td>
+        </tr>
+        <tr>
+          <th>Payment Status</th>
+          <td><span class="badge bg-success">{{ payment?.payment_status }}</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <hr>
+
+    <h6 class="fw-bold mb-3">Latest Transactions</h6>
+
+    <table class="table table-bordered table-sm">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>Transaction ID</th>
+          <th>Method</th>
+          <th>Amount</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let transaction of transactions | slice:0:5; let i=index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ transaction.transaction_id }}</td>
+          <td class="text-capitalize">{{ transaction.payment_method }}</td>
+          <td>{{ transaction.amount_paid | currency:'INR' }}</td>
+          <td>{{ transaction.payment_date | date:'mediumDate' }}</td>
+        </tr>
+
+        <tr *ngIf="transactions.length===0">
+          <td colspan="5" class="text-center">No transactions available</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="text-center mt-4">
+      <p>Thank you for your payment.</p>
+      <p class="small text-muted">This is a computer generated receipt.</p>
+    </div>
+
+    <div class="text-center mt-3 no-print">
+      <button class="btn btn-primary" (click)="printReceipt()">Print Receipt</button>
+    </div>
+  </div>
+</div>

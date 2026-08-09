@@ -1,0 +1,57 @@
+/* src/app/features/dashboard/add-student/add-student.css */
+/* .form-section, .form-grid, .full-width, .hint, .year-status, .form-group,
+   and label styling now come from the shared classes in styles.css.
+   Removed from this file: .form-scrollable, .status/.status.success,
+   .loading-message, .modal/.modal-content/.modal-launch/.close-btn —
+   none of these classes existed anywhere in add-student.html, so they
+   were dead CSS shipped to every user for no reason. */
+
+:host { display: block; width: 100%; }
+
+.registration-container {
+  max-width: 1400px;
+  margin: auto;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-lg);
+  transition: background 0.25s ease;
+}
+
+.form-header { text-align: center; margin-bottom: 28px; }
+.form-header h2 { color: var(--primary); font-size: 1.8rem; margin-bottom: 8px; font-weight: 700; }
+.form-header p  { color: var(--text-muted); font-size: 0.95rem; }
+
+input, select, textarea {
+  border-radius: var(--radius-md);
+}
+
+textarea { resize: vertical; min-height: 90px; }
+
+input:focus, select:focus, textarea:focus {
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+input[readonly] { background: var(--bg-surface-2); color: var(--text-muted); cursor: not-allowed; }
+
+.form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 28px;
+}
+
+.form-actions button[type="submit"] {
+  padding: 11px 24px;
+}
+
+.form-actions button[type="submit"]:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .form-header h2 { font-size: 1.4rem; }
+  .form-actions { flex-direction: column; }
+}

@@ -1,0 +1,84 @@
+<!-- class-view.html -->
+<div class="page-wrap">
+
+  <div class="page-header">
+    <h1 class="page-title">Classes</h1>
+    <div class="header-actions">
+      <button class="btn-danger-outline" *ngIf="anySelected" (click)="bulkDelete()">Delete Selected</button>
+      <button class="btn-accent-outline" *ngIf="anyEditing" (click)="bulkSave()" [disabled]="saving">
+        {{ saving ? 'Saving…' : 'Save All Edits' }}
+      </button>
+      <button class="btn-primary" (click)="goToCreate()">+ Create</button>
+    </div>
+  </div>
+
+  <div class="context-bar" *ngIf="selectedYear">
+    <span class="context-label">Academic Year:</span>
+    <span class="context-value">{{ selectedYear.yearLabel }}</span>
+  </div>
+
+  <div class="alert alert-success" *ngIf="successMessage">{{ successMessage }}</div>
+  <div class="alert alert-error"   *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <div class="table-card">
+    <div class="loading-row" *ngIf="loading">Loading…</div>
+    <div class="empty-row"   *ngIf="!loading && rows.length === 0">No classes found.</div>
+
+    <table class="data-table" *ngIf="!loading && rows.length > 0">
+      <thead>
+        <tr>
+          <th><input type="checkbox" [checked]="allSelected" (change)="toggleAll($event)" /></th>
+          <th>ID</th>
+          <th>Class Name</th>
+          <th>Fee Amount</th>
+          <th>Connected?</th>
+          <th>Finance?</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of rows" [class.editing-row]="row.editing">
+          <td><input type="checkbox" [(ngModel)]="row.selected" /></td>
+          <td class="id-cell">{{ row.classId }}</td>
+
+          <td>
+            <span *ngIf="!row.editing">{{ row.className }}</span>
+            <input *ngIf="row.editing" class="cell-input" type="text" [(ngModel)]="row.draft['className']" />
+          </td>
+
+          <td>
+            <span *ngIf="!row.editing">{{ row.feeAmount | number:'1.2-2' }}</span>
+            <input *ngIf="row.editing" class="cell-input" type="number" [(ngModel)]="row.draft['feeAmount']" />
+          </td>
+
+          <td class="center-cell">
+            <span *ngIf="!row.editing" class="badge" [class.badge-green]="row.isConnected" [class.badge-muted]="!row.isConnected">
+              {{ row.isConnected ? 'Yes' : 'No' }}
+            </span>
+            <input *ngIf="row.editing" type="checkbox" class="check-input" [(ngModel)]="row.draft['isConnected']" />
+          </td>
+
+          <td class="center-cell">
+            <span *ngIf="!row.editing" class="badge" [class.badge-green]="row.isFinanceConnected" [class.badge-muted]="!row.isFinanceConnected">
+              {{ row.isFinanceConnected ? 'Yes' : 'No' }}
+            </span>
+            <input *ngIf="row.editing" type="checkbox" class="check-input" [(ngModel)]="row.draft['isFinanceConnected']" />
+          </td>
+
+          <td class="actions-cell">
+            <ng-container *ngIf="!row.editing">
+              <button class="btn-link" (click)="viewBooks(row)">Books</button>
+              <button class="btn-link" (click)="startEdit(row)">Edit</button>
+              <button class="btn-link danger" (click)="deleteRow(row)">Delete</button>
+            </ng-container>
+            <ng-container *ngIf="row.editing">
+              <button class="btn-link success" (click)="saveRow(row)" [disabled]="saving">Save</button>
+              <button class="btn-link" (click)="cancelEdit(row)">Cancel</button>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>

@@ -1,0 +1,220 @@
+<div class="page-wrap">
+
+  <!-- ================= HEADER ================= -->
+  <div class="page-header">
+    <h1 class="page-title">Books</h1>
+
+    <div class="header-actions">
+
+      <button
+        class="btn-danger-outline"
+        *ngIf="anySelected"
+        (click)="bulkDelete()">
+        Delete Selected
+      </button>
+
+      <button
+        class="btn-accent-outline"
+        *ngIf="anyEditing"
+        (click)="bulkSave()"
+        [disabled]="saving">
+        {{ saving ? 'Saving…' : 'Save All Edits' }}
+      </button>
+
+      <button
+        class="btn-primary"
+        (click)="goToCreate()">
+        + Create
+      </button>
+
+      <button
+        class="btn-primary"
+        (click)="goToUniform()"
+      >
+        uniforms
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ================= ACADEMIC YEAR ================= -->
+  <div class="context-bar" *ngIf="selectedYear">
+    <span class="context-label">Academic Year:</span>
+    <span class="context-value">
+      {{ selectedYear.yearLabel }}
+    </span>
+  </div>
+
+  <!-- ================= ALERTS ================= -->
+  <div class="alert alert-success" *ngIf="successMessage">
+    {{ successMessage }}
+  </div>
+
+  <div class="alert alert-error" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <!-- ================= LOADING ================= -->
+  <div class="loading-row" *ngIf="loading">
+    Loading…
+  </div>
+
+  <!-- ================= EMPTY STATE ================= -->
+  <div
+    class="empty-row"
+    *ngIf="!loading && (!classes || classes.length === 0)">
+    No classes available.
+  </div>
+
+  <!-- ================= CLASSES ================= -->
+  <div
+    class="class-section"
+    *ngFor="let cls of classes">
+
+    <!-- CLASS HEADER -->
+    <div class="class-header">
+      <h2 class="class-title">
+        {{ cls.className }}
+      </h2>
+    </div>
+
+    <!-- TABLE CARD -->
+    <div class="table-card">
+
+      <!-- EMPTY STATE (BOOKS) -->
+      <div
+        class="empty-row"
+        *ngIf="!loading && (!cls.books || cls.books.length === 0)">
+        No books found for this class.
+      </div>
+
+      <!-- TABLE -->
+      <table
+        class="data-table"
+        *ngIf="!loading && cls.books && cls.books.length > 0">
+
+        <!-- TABLE HEADER -->
+        <thead>
+          <tr>
+            <th>
+              <input
+                type="checkbox"
+                [checked]="cls.books.every(b => b.selected)"
+                (change)="toggleAllForClass($event, cls)" />
+            </th>
+            <th>ID</th>
+            <th>Book Type</th>
+            <th>Book Amount</th>
+            <th>Connected?</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <!-- TABLE BODY -->
+        <tbody>
+          <tr
+            *ngFor="let row of cls.books"
+            [class.editing-row]="row.editing">
+
+            <!-- SELECT -->
+            <td>
+              <input
+                type="checkbox"
+                [(ngModel)]="row.selected" />
+            </td>
+
+            <!-- ID -->
+            <td class="id-cell">
+              {{ row.bookId }}
+            </td>
+
+            <!-- BOOK TYPE -->
+            <td>
+              <span *ngIf="!row.editing">
+                {{ row.bookType }}
+              </span>
+
+              <input
+                *ngIf="row.editing"
+                class="cell-input"
+                type="text"
+                [(ngModel)]="row.draft.bookType" />
+            </td>
+
+            <!-- BOOK AMOUNT -->
+            <td>
+              <span *ngIf="!row.editing">
+                {{ row.bookAmount | number:'1.2-2' }}
+              </span>
+
+              <input
+                *ngIf="row.editing"
+                class="cell-input"
+                type="number"
+                [(ngModel)]="row.draft.bookAmount" />
+            </td>
+
+            <!-- CONNECTED -->
+            <td class="center-cell">
+
+              <span
+                *ngIf="!row.editing"
+                class="badge"
+                [class.badge-green]="row.isConnected"
+                [class.badge-muted]="!row.isConnected">
+                {{ row.isConnected ? 'Yes' : 'No' }}
+              </span>
+
+              <input
+                *ngIf="row.editing"
+                type="checkbox"
+                class="check-input"
+                [(ngModel)]="row.draft.isConnected" />
+
+            </td>
+
+            <!-- ACTIONS -->
+            <td class="actions-cell">
+
+              <!-- VIEW MODE -->
+              <ng-container *ngIf="!row.editing">
+                <button
+                  class="btn-link"
+                  (click)="startEdit(row)">
+                  Edit
+                </button>
+
+                <button
+                  class="btn-link danger"
+                  (click)="deleteRow(row)">
+                  Delete
+                </button>
+              </ng-container>
+
+              <!-- EDIT MODE -->
+              <ng-container *ngIf="row.editing">
+                <button
+                  class="btn-link success"
+                  (click)="saveRow(row)"
+                  [disabled]="saving">
+                  Save
+                </button>
+
+                <button
+                  class="btn-link"
+                  (click)="cancelEdit(row)">
+                  Cancel
+                </button>
+              </ng-container>
+
+            </td>
+
+          </tr>
+        </tbody>
+
+      </table>
+
+    </div>
+  </div>
+
+</div>

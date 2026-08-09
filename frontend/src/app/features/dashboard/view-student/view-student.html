@@ -1,0 +1,158 @@
+<div class="table-wrapper">
+
+  <table class="item-table"
+         border="1"
+         cellspacing="0"
+         cellpadding="5">
+
+<thead>
+
+  <!-- ACADEMIC YEAR HEADER -->
+  <tr>
+    <th colspan="25" class="academic-year-header-cell">
+
+      <div class="academic-year-header">
+        {{ currentAcademicYear?.academicYearId || 'Academic Year' }}
+      </div>
+
+      <div class="academic-year-subheader">
+        {{ currentAcademicYear?.yearLabel }}
+        <br />
+
+        <small>
+          {{ currentAcademicYear?.startDate | date:'mediumDate' }}
+          |
+          {{ currentAcademicYear?.endDate | date:'mediumDate' }}
+        </small>
+      </div>
+
+    </th>
+  </tr>
+
+  <!-- COLUMN HEADERS -->
+  <tr>
+    <th>Student ID</th>
+    <th>Contact Number</th>
+    <th>Student Name</th>
+    <th>DOB</th>
+    <th>Gender</th>
+    <th>Section</th>
+    <th>Email ID</th>
+
+    <th>Parent ID</th>
+    <th>Father Name</th>
+    <th>Mother Name</th>
+    <th>Secondary Contact</th>
+    <th>Parent Email</th>
+    <th>Address</th>
+    <th>Occupation</th>
+
+    <th>Academic Year ID</th>
+
+    <th>Class ID</th>
+    <th>Class Name</th>
+    <th>Fee Amount</th>
+
+    <th>Payment ID</th>
+    <th>Total Paid</th>
+    <th>Pending Amount</th>
+    <th>Payment Status</th>
+    <th>Due Date</th>
+
+    <th>Transactions</th>
+    <th>Actions</th>
+  </tr>
+
+</thead>
+
+<tbody>
+
+  <!-- ✅ FIXED: removed ?? [] -->
+  <tr *ngFor="let student of students">
+
+    <!-- STUDENT INFO -->
+    <td>{{ student.student_id || '-' }}</td>
+    <td>{{ student.contact_number || '-' }}</td>
+    <td>{{ student.student_name || '-' }} {{ student.sur_name || '' }}</td>
+    <td>{{ student.dob | date:'mediumDate' }}</td>
+    <td>{{ student.gender || '-' }}</td>
+    <td>{{ student.section || '-' }}</td>
+    <td>{{ student.email_id || '-' }}</td>
+
+    <!-- PARENT INFO -->
+    <td>
+      <!-- ✅ FIXED: ensure number -->
+      <a href=""
+         (click)="student.parents_id && filterSiblings(student.parents_id); $event.preventDefault()">
+        {{ student.parents_id || '-' }}
+      </a>
+    </td>
+
+    <td>{{ student.fathers_first_name || '-' }} {{ student.fathers_sur_name || '' }}</td>
+    <td>{{ student.mothers_first_name || '-' }} {{ student.mothers_sur_name || '' }}</td>
+    <td>{{ student.secondary_contact_number || '-' }}</td>
+    <td>{{ student.email || '-' }}</td>
+    <td>{{ student.address || '-' }}</td>
+    <td>{{ student.occupation || '-' }}</td>
+
+    <!-- ACADEMIC -->
+    <td>{{ student.academic_year_id || '-' }}</td>
+
+    <!-- CLASS -->
+    <td>{{ student.class_id || '-' }}</td>
+    <td>{{ student.class_name || '-' }}</td>
+    <td>{{ student.fee_amount | currency:'INR' }}</td>
+
+    <!-- PAYMENT -->
+    <td>{{ student.payment_id || '-' }}</td>
+    <td>{{ student.total_amount_paid | currency:'INR' }}</td>
+    <td>{{ student.pending_amount | currency:'INR' }}</td>
+    <td>{{ student.payment_status || '-' }}</td>
+    <td>{{ student.due_date | date:'mediumDate' }}</td>
+
+    <!-- TRANSACTIONS -->
+    <td>
+
+      <!-- ✅ FIXED: safe check -->
+      <ng-container *ngIf="student.tuition_transactions && student.tuition_transactions.length > 0; else noTx">
+
+        <div *ngFor="let tx of student.tuition_transactions">
+          {{ tx.amount_paid | currency:'INR' }} -
+          {{ tx.payment_date | date:'shortDate' }}
+        </div>
+
+      </ng-container>
+
+      <ng-template #noTx>
+        <span>-</span>
+      </ng-template>
+
+    </td>
+
+    <!-- ACTIONS -->
+    <td>
+
+    <button type="button"
+            (click)="onUpdateStudent(student)">
+      Update
+    </button>
+
+    <button type="button"
+            (click)="onViewFamilyPending(student)">
+      Siblings Pending
+    </button>
+
+    <button type="button"
+            (click)="goToPayments(student)">
+      Payment
+    </button>
+
+    </td>
+
+  </tr>
+
+</tbody>
+
+  </table>
+
+</div>

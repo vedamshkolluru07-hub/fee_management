@@ -1,0 +1,83 @@
+<div class="transactions-container" *ngIf="student">
+  <h2>Student Details</h2>
+
+  <!-- ================= STUDENT DETAILS ================= -->
+  <section class="section">
+    <div><strong>Student ID:</strong> {{ student.student_id }}</div>
+    <div><strong>First Name:</strong> {{ student.student_name }}</div>
+    <div><strong>Last Name:</strong> {{ student.sur_name }}</div>
+    <div><strong>Date of Birth:</strong> {{ student.dob }}</div>
+    <div><strong>Gender:</strong> {{ student.gender }}</div>
+    <div><strong>Section:</strong> {{ student.section }}</div>
+    <div><strong>Email:</strong> {{ student.email_id }}</div>
+  </section>
+
+  <!-- ================= ACADEMIC DETAILS ================= -->
+  <section class="section">
+    <h3>Academic Details</h3>
+    <div><strong>Academic Year ID:</strong> {{ selectedAcademicYear?.academicYearId }}</div>
+    <div><strong>Academic Year:</strong> {{ selectedAcademicYear?.yearLabel }}</div>
+    <div><strong>Start Date:</strong> {{ selectedAcademicYear?.startDate }}</div>
+    <div><strong>End Date:</strong> {{ selectedAcademicYear?.endDate }}</div>
+    <div><strong>Current Year:</strong> {{ selectedAcademicYear?.isCurrentYear ? 'Yes' : 'No' }}</div>
+    <div><strong>Connected:</strong> {{ selectedAcademicYear?.isConnected ? 'Yes' : 'No' }}</div>
+  </section>
+
+  <!-- ================= CLASS DETAILS ================= -->
+  <section class="section">
+    <h3>Class Details</h3>
+    <div><strong>Class ID:</strong> {{ selectedClass?.classId }}</div>
+    <div><strong>Class Name:</strong> {{ selectedClass?.className }}</div>
+    <div><strong>Fee Amount:</strong> {{ selectedClass?.feeAmount }}</div>
+    <div><strong>Finance Connected:</strong> {{ selectedClass?.isFinanceConnected ? 'Yes' : 'No' }}</div>
+    <div><strong>Class Connected:</strong> {{ selectedClass?.isConnected ? 'Yes' : 'No' }}</div>
+  </section>
+
+  <!-- ================= PARENT DETAILS ================= -->
+  <section class="section">
+    <h3>Parent Details</h3>
+    <div><strong>Parent ID:</strong> {{ student.parents_id }}</div>
+    <div><strong>Father First Name:</strong> {{ student.fathers_first_name }}</div>
+    <div><strong>Father Last Name:</strong> {{ student.fathers_sur_name }}</div>
+    <div><strong>Mother First Name:</strong> {{ student.mothers_first_name }}</div>
+    <div><strong>Mother Last Name:</strong> {{ student.mothers_sur_name }}</div>
+    <div><strong>Contact Number:</strong> {{ student.contact_number }}</div>
+    <div><strong>Secondary Contact:</strong> {{ student.secondary_contact_number }}</div>
+    <div><strong>Email:</strong> {{ student.email }}</div>
+    <div><strong>Address:</strong> {{ student.address }}</div>
+    <div><strong>Occupation:</strong> {{ student.occupation }}</div>
+  </section>
+
+  <!-- ================= ACTION BUTTONS ================= -->
+  <div class="button-container">
+
+    <p>
+      <strong>Pay :</strong>&nbsp;
+    </p>
+
+    <button 
+      type="button" 
+      (click)="goToTution()">
+      Tuition
+    </button>
+
+    <button 
+      type="button" 
+      (click)="goToUniform()">
+      Uniform
+    </button>
+
+    <button 
+      type="button" 
+      (click)="goToBooks()">
+      Books
+    </button>
+
+    <button 
+      type="button" 
+      (click)="family_Pending()">
+      Siblings Pending
+    </button>
+
+  </div>
+</div>

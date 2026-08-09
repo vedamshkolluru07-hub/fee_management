@@ -1,0 +1,145 @@
+<div class="auth-card auth-card--lg">
+
+  <h2 class="auth-card__title">Create Admin</h2>
+
+  <form [formGroup]="adminForm" (ngSubmit)="onSubmit()">
+
+    <!-- First Name -->
+    <div class="form-group">
+      <label for="firstName">First Name</label>
+
+      <input
+        id="firstName"
+        type="text"
+        formControlName="first_name"
+        placeholder="Enter first name"
+      />
+
+      @if (first_name?.touched && first_name?.invalid) {
+        <small class="field-error">First name is required</small>
+      }
+    </div>
+
+    <!-- Last Name -->
+    <div class="form-group">
+      <label for="lastName">Last Name</label>
+
+      <input
+        id="lastName"
+        type="text"
+        formControlName="last_name"
+        placeholder="Enter last name"
+      />
+
+      @if (last_name?.touched && last_name?.invalid) {
+        <small class="field-error">Last name is required</small>
+      }
+    </div>
+
+    <!-- Username -->
+    <div class="form-group">
+      <label for="username">Username</label>
+
+      <input
+        id="username"
+        type="text"
+        formControlName="username"
+        placeholder="Enter username"
+      />
+
+      @if (username?.touched && username?.invalid) {
+        <small class="field-error">Username must be at least 3 characters</small>
+      }
+    </div>
+
+    <!-- Email -->
+    <div class="form-group">
+      <label for="email">Email</label>
+
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        placeholder="Enter email"
+      />
+
+      @if (email?.touched && email?.invalid) {
+        <small class="field-error">Enter a valid email address</small>
+      }
+    </div>
+
+    <!-- Phone -->
+    <div class="form-group">
+      <label for="phone">Phone</label>
+
+      <input
+        id="phone"
+        type="tel"
+        formControlName="phone"
+        placeholder="Enter phone number"
+      />
+
+      @if (phone?.touched && phone?.invalid) {
+        <small class="field-error">Please enter a valid phone number</small>
+      }
+    </div>
+
+    <!-- Password -->
+    <div class="form-group">
+      <label for="password">Password</label>
+
+      <input
+        id="password"
+        type="password"
+        formControlName="password"
+        placeholder="Enter password"
+      />
+
+      @if (password?.touched && password?.invalid) {
+        <small class="field-error">Password must be at least 6 characters</small>
+      }
+    </div>
+
+    <!-- Confirm Password -->
+    <div class="form-group">
+      <label for="confirmPassword">Confirm Password</label>
+
+      <input
+        id="confirmPassword"
+        type="password"
+        formControlName="confirmPassword"
+        placeholder="Confirm password"
+      />
+
+      @if (confirmPassword?.touched && confirmPassword?.invalid) {
+        <small class="field-error">Confirm password is required</small>
+      }
+    </div>
+
+    <!-- Error -->
+    @if (errorMessage()) {
+      <div class="alert alert-error">{{ errorMessage() }}</div>
+    }
+
+    <!-- Success -->
+    @if (successMessage()) {
+      <div class="alert alert-success">{{ successMessage() }}</div>
+    }
+
+    <!-- Submit -->
+    <button type="submit" [disabled]="loading()">
+      @if (loading()) {
+        Creating Admin...
+      } @else {
+        Create Admin
+      }
+    </button>
+
+  </form>
+
+  <div class="auth-card__footer">
+    Back to
+    <a routerLink="/login">Login</a>
+  </div>
+
+</div>

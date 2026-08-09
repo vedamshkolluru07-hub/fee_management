@@ -1,0 +1,22 @@
+.about-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 48px 24px;
+}
+
+.about-title {
+  color: var(--pub-primary, #2563eb);
+  margin-bottom: 24px;
+}
+
+.about-block {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--pub-text, #111827);
+  margin-bottom: 20px;
+  white-space: pre-wrap;
+}
+
+.about-loading {
+  color: var(--pub-text, #111827);
+}

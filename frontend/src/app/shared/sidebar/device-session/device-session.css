@@ -1,0 +1,46 @@
+:root,[data-theme="light"]{--bg:linear-gradient(135deg,#f5f7fa,#eef2f7);--surface:rgba(255,255,255,.92);--surface-alt:#f9fafb;--text:#111827;--text-secondary:#4b5563;--text-muted:#6b7280;--text-light:#9ca3af;--border:#d1d5db;--border-soft:#e5e7eb;--shadow:0 8px 20px rgba(0,0,0,.06);--primary:#6366f1;--primary-dark:#4f46e5;--danger:#ef4444;--loading-bg:#e0f2fe;--loading-text:#0369a1;--error-bg:#fef2f2;--error-text:#991b1b;--empty-bg:#f3f4f6;--empty-text:#374151;}
+
+[data-theme="dark"]{--bg:linear-gradient(135deg,#0f172a,#1e293b);--surface:rgba(30,41,59,.96);--surface-alt:#334155;--text:#f8fafc;--text-secondary:#cbd5e1;--text-muted:#94a3b8;--text-light:#64748b;--border:#475569;--border-soft:#475569;--shadow:0 10px 25px rgba(0,0,0,.45);--primary:#818cf8;--primary-dark:#6366f1;--danger:#f87171;--loading-bg:#0c4a6e;--loading-text:#bae6fd;--error-bg:#7f1d1d;--error-text:#fecaca;--empty-bg:#334155;--empty-text:#cbd5e1;}
+
+[data-theme="blue"]{--bg:linear-gradient(135deg,#dbeafe,#bfdbfe);--surface:rgba(255,255,255,.92);--surface-alt:#eff6ff;--text:#1e3a8a;--text-secondary:#1d4ed8;--text-muted:#3b82f6;--text-light:#60a5fa;--border:#93c5fd;--border-soft:#bfdbfe;--shadow:0 8px 20px rgba(37,99,235,.18);--primary:#2563eb;--primary-dark:#1d4ed8;--danger:#dc2626;--loading-bg:#dbeafe;--loading-text:#1d4ed8;--error-bg:#fee2e2;--error-text:#b91c1c;--empty-bg:#eff6ff;--empty-text:#1d4ed8;}
+
+[data-theme="green"]{--bg:linear-gradient(135deg,#dcfce7,#bbf7d0);--surface:rgba(255,255,255,.92);--surface-alt:#f0fdf4;--text:#14532d;--text-secondary:#166534;--text-muted:#15803d;--text-light:#22c55e;--border:#86efac;--border-soft:#bbf7d0;--shadow:0 8px 20px rgba(22,163,74,.18);--primary:#16a34a;--primary-dark:#15803d;--danger:#dc2626;--loading-bg:#dcfce7;--loading-text:#166534;--error-bg:#fee2e2;--error-text:#b91c1c;--empty-bg:#f0fdf4;--empty-text:#166534;}
+
+.session-wrapper{min-height:100vh;padding:24px;background:var(--bg);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;transition:background .3s ease;}
+
+.session-header h2{margin:0 0 16px;font-size:24px;font-weight:700;color:var(--text);}
+
+.session-filters{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px;}
+
+.input{min-width:180px;padding:10px 12px;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:10px;outline:none;transition:all .25s ease;}
+.input::placeholder{color:var(--text-light);}
+.input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,.18);}
+
+.state{margin-bottom:12px;padding:12px 14px;border-radius:10px;font-size:14px;font-weight:500;}
+.loading{background:var(--loading-bg);color:var(--loading-text);}
+.error{background:var(--error-bg);color:var(--error-text);}
+.empty{background:var(--empty-bg);color:var(--empty-text);}
+
+.session-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:18px;}
+
+.session-card{padding:16px;background:var(--surface);border:1px solid var(--border-soft);border-radius:14px;backdrop-filter:blur(12px);box-shadow:var(--shadow);transition:transform .25s ease,box-shadow .25s ease;}
+.session-card:hover{transform:translateY(-4px);}
+
+.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.card-top h3{margin:0;font-size:16px;font-weight:700;color:var(--text);}
+
+.meta p{margin:4px 0;font-size:13px;color:var(--text-secondary);}
+.meta span{font-weight:600;color:var(--text-muted);}
+
+.activity-section{margin-top:14px;}
+.activity-section h4{margin:0 0 8px;font-size:14px;color:var(--text);}
+.activity-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;}
+.activity-item{padding:10px;background:var(--surface-alt);border:1px solid var(--border-soft);border-radius:10px;color:var(--text-secondary);font-size:13px;}
+
+.muted{font-size:13px;color:var(--text-light);}
+
+.btn{padding:10px 14px;border:none;border-radius:10px;cursor:pointer;font-weight:600;transition:all .25s ease;}
+.btn:hover{transform:translateY(-2px);}
+.btn-primary{color:#fff;background:linear-gradient(135deg,var(--primary),var(--primary-dark));}
+.btn-danger{color:#fff;background:var(--danger);}
+.btn-small{padding:6px 10px;font-size:12px;}

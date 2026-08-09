@@ -1,0 +1,10 @@
+/* src/app/features/auth/register/register.css */
+/* Card shell, form groups, field errors, and alerts now come from the
+   shared classes in styles.css (.auth-card, .form-group, .field-error,
+   .alert). Nothing register-specific remains. */
+
+:host {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}

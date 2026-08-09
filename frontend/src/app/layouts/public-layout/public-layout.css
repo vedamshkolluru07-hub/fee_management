@@ -1,0 +1,116 @@
+.public-shell {
+  /* Defaults — overridden at runtime from admin-configured site_theme */
+  --pub-primary: #2563eb;
+  --pub-secondary: #f3f4f6;
+  --pub-bg: #ffffff;
+  --pub-text: #111827;
+
+  background: var(--pub-bg);
+  color: var(--pub-text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.public-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.public-header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* ---------------- Brand (logo + name) ---------------- */
+.public-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  min-width: 0; /* allow name to truncate instead of pushing nav offscreen */
+}
+
+.public-brand-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.public-brand-name {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--pub-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------------- Nav ---------------- */
+.public-nav {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-shrink: 0;
+}
+
+.public-nav a {
+  text-decoration: none;
+  color: var(--pub-text);
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.public-nav a:hover {
+  color: var(--pub-primary);
+}
+
+.public-nav a.active {
+  color: var(--pub-primary);
+}
+
+.public-login-btn {
+  background: var(--pub-primary);
+  color: #fff !important;
+  padding: 8px 18px;
+  border-radius: 8px;
+  transition: opacity 0.15s ease;
+}
+
+.public-login-btn:hover {
+  opacity: 0.9;
+}
+
+.public-content {
+  flex: 1;
+}
+
+/* ---------------- Responsive ---------------- */
+@media (max-width: 640px) {
+  .public-header-inner {
+    padding: 10px 16px;
+    flex-wrap: wrap;
+  }
+
+  .public-brand-name {
+    font-size: 0.95rem;
+  }
+
+  .public-nav {
+    gap: 14px;
+  }
+
+  .public-login-btn {
+    padding: 6px 14px;
+  }
+}

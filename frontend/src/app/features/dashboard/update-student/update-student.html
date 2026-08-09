@@ -1,0 +1,134 @@
+<div class="modal-container" *ngIf="student">
+
+  <h2>Update Student</h2>
+
+  <div class="error" *ngIf="error">{{ error }}</div>
+  <div class="success" *ngIf="successMessage">{{ successMessage }}</div>
+
+  <!-- ================= STUDENT DETAILS ================= -->
+  <section class="section">
+
+    <h3>Student Details</h3>
+
+    <div><b>Student ID:</b> {{ student.student_id }}</div>
+
+    <label>First Name</label>
+    <input
+      type="text"
+      [(ngModel)]="student.student_name"
+    />
+
+    <label>Last Name</label>
+    <input
+      type="text"
+      [(ngModel)]="student.sur_name"
+    />
+
+    <label>Date of Birth</label>
+    <input
+      type="date"
+      [(ngModel)]="student.dob"
+    />
+
+    <label>Gender</label>
+    <select [(ngModel)]="student.gender">
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <label>Section</label>
+    <select [(ngModel)]="student.section">
+      <option value="A">A</option>
+      <option value="B">B</option>
+    </select>
+
+    <label>Email</label>
+    <input
+      type="email"
+      [(ngModel)]="student.email_id"
+    />
+
+  </section>
+
+  <!-- ================= PARENT DETAILS ================= -->
+  <section class="section">
+
+    <h3>Parent Details</h3>
+
+    <div><b>Parent ID:</b> {{ student.parents_id }}</div>
+
+    <label>Father First Name</label>
+    <input
+      type="text"
+      [(ngModel)]="student.fathers_first_name"
+    />
+
+    <label>Father Last Name</label>
+    <input
+      type="text"
+      [(ngModel)]="student.fathers_sur_name"
+    />
+
+    <label>Mother First Name</label>
+    <input
+      type="text"
+      [(ngModel)]="student.mothers_first_name"
+    />
+
+    <label>Mother Last Name</label>
+    <input
+      type="text"
+      [(ngModel)]="student.mothers_sur_name"
+    />
+
+    <label>Contact Number</label>
+    <input
+      type="text"
+      [(ngModel)]="student.contact_number"
+    />
+
+    <label>Secondary Contact Number</label>
+    <input
+      type="text"
+      [(ngModel)]="student.secondary_contact_number"
+    />
+
+    <label>Email</label>
+    <input
+      type="email"
+      [(ngModel)]="student.email"
+    />
+
+    <label>Address</label>
+    <textarea
+      [(ngModel)]="student.address">
+    </textarea>
+
+    <label>Occupation</label>
+    <input
+      type="text"
+      [(ngModel)]="student.occupation"
+    />
+
+  </section>
+
+  <!-- ================= ACTIONS ================= -->
+  <div class="actions">
+
+    <button
+      type="button"
+      (click)="saveAll()">
+      Save All
+    </button>
+
+    <button
+      type="button"
+      (click)="deleteStudentViaStudentService()"
+      style="color: red;">
+      Delete Student
+    </button>
+
+  </div>
+
+</div>

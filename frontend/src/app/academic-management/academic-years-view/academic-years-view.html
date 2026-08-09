@@ -1,0 +1,177 @@
+<!-- academic-years-view.html -->
+<div class="page-wrap">
+
+  <div class="page-header">
+    <h1 class="page-title">Academic Years</h1>
+
+    <div class="header-actions">
+      <button class="btn-danger-outline" *ngIf="anySelected" (click)="bulkDelete(false)">
+        Delete Selected
+      </button>
+
+      <button class="btn-danger-outline" *ngIf="anySelected" (click)="bulkDelete(true)">
+        Purge Selected
+      </button>
+
+      <button class="btn-accent-outline" *ngIf="anyEditing" (click)="bulkSave()" [disabled]="saving">
+        {{ saving ? 'Saving…' : 'Save All Edits' }}
+      </button>
+
+      <button class="btn-primary" (click)="goToCreate()">+ Create</button>
+    </div>
+  </div>
+
+  <!-- Alerts -->
+  <div class="alert alert-success" *ngIf="successMessage">{{ successMessage }}</div>
+  <div class="alert alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <!-- Table -->
+  <div class="table-card">
+
+    <div class="loading-row" *ngIf="loading">Loading…</div>
+    <div class="empty-row" *ngIf="!loading && rows.length === 0">
+      No academic years found.
+    </div>
+
+    <table class="data-table" *ngIf="!loading && rows.length > 0">
+
+      <thead>
+        <tr>
+          <th>
+            <input type="checkbox" [checked]="allSelected" (change)="toggleAll($event)" />
+          </th>
+          <th>ID</th>
+          <th>Year Label</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Current?</th>
+          <th>Connected?</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let row of rows" [class.editing-row]="row.editing">
+
+          <!-- Select -->
+          <td>
+            <input type="checkbox" [(ngModel)]="row.selected" />
+          </td>
+
+          <!-- ID -->
+          <td class="id-cell">
+            {{ row.academicYearId }}
+          </td>
+
+          <!-- Year Label -->
+          <td>
+            <span *ngIf="!row.editing">{{ row.yearLabel }}</span>
+            <input *ngIf="row.editing"
+                   class="cell-input"
+                   type="text"
+                   [(ngModel)]="row.draft['yearLabel']" />
+          </td>
+
+          <!-- Start Date -->
+          <td>
+            <span *ngIf="!row.editing">{{ row.startDate | date:'mediumDate' }}</span>
+            <input *ngIf="row.editing"
+                   class="cell-input"
+                   type="date"
+                   [(ngModel)]="row.draft['startDate']" />
+          </td>
+
+          <!-- End Date -->
+          <td>
+            <span *ngIf="!row.editing">
+              {{ row.endDate ? (row.endDate | date:'mediumDate') : '—' }}
+            </span>
+            <input *ngIf="row.editing"
+                   class="cell-input"
+                   type="date"
+                   [(ngModel)]="row.draft['endDate']" />
+          </td>
+
+          <!-- Current Year -->
+          <td class="center-cell">
+            <span *ngIf="!row.editing"
+                  class="badge"
+                  [class.badge-green]="row.isCurrentYear"
+                  [class.badge-muted]="!row.isCurrentYear">
+              {{ row.isCurrentYear ? 'Yes' : 'No' }}
+            </span>
+
+            <input *ngIf="row.editing"
+                   type="checkbox"
+                   class="check-input"
+                   [(ngModel)]="row.draft['isCurrentYear']" />
+          </td>
+
+          <!-- Connected -->
+          <td class="center-cell">
+            <span *ngIf="!row.editing"
+                  class="badge"
+                  [class.badge-green]="row.isConnected"
+                  [class.badge-muted]="!row.isConnected">
+              {{ row.isConnected ? 'Yes' : 'No' }}
+            </span>
+
+            <input *ngIf="row.editing"
+                   type="checkbox"
+                   class="check-input"
+                   [(ngModel)]="row.draft['isConnected']" />
+          </td>
+
+          <!-- Actions -->
+          <td class="actions-cell">
+
+            <ng-container *ngIf="!row.editing">
+
+              <!-- NEW: Select Module (Class / Uniform) -->
+              <button class="btn-link" (click)="openModuleSelector(row)">›</button>
+
+              <button class="btn-link" (click)="startEdit(row)">Edit</button>
+              <button class="btn-link danger" (click)="deleteRow(row, false)">Delete</button>
+              <button class="btn-link danger" (click)="deleteRow(row, true)">Purge</button>
+
+            </ng-container>
+
+            <ng-container *ngIf="row.editing">
+              <button class="btn-link success"
+                      (click)="saveRow(row)"
+                      [disabled]="saving">
+                Save
+              </button>
+
+              <button class="btn-link" (click)="cancelEdit(row)">
+                Cancel
+              </button>
+            </ng-container>
+
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODULE SELECTOR POPUP -->
+  <div class="action-menu" *ngIf="moduleMenuOpen">
+    <div class="menu-title">
+      Select Module
+    </div>
+
+    <button class="menu-item" (click)="goToModule('class-view')">
+      Classes
+    </button>
+
+    <button class="menu-item" (click)="goToModule('uniform-view')">
+      Uniform
+    </button>
+
+    <button class="menu-cancel" (click)="closeModuleMenu()">
+      Cancel
+    </button>
+  </div>
+
+</div>

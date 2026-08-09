@@ -1,0 +1,39 @@
+.connect-page { padding: 24px; }
+.page-header h2 { margin: 0 0 4px; color: var(--text-primary); }
+.page-header p { margin: 0 0 20px; color: var(--text-secondary); font-size: 0.9rem; }
+
+.section-card {
+  background: var(--card-bg, #fff); border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 10px; padding: 20px; margin-bottom: 24px;
+}
+.section-card h3 { margin: 0 0 4px; color: var(--text-primary); }
+.hint { margin: 0 0 14px; font-size: 0.85rem; color: var(--text-muted, #9ca3af); }
+
+.inline-message {
+  background: var(--primary-light, #eff6ff); color: var(--primary, #2563eb);
+  padding: 8px 12px; border-radius: 8px; margin-bottom: 12px; font-size: 0.85rem;
+}
+
+.links-grid { display: flex; flex-direction: column; gap: 10px; }
+.link-row {
+  display: grid; grid-template-columns: 110px 1fr 100px 80px; gap: 10px; align-items: center;
+}
+.platform-name { text-transform: capitalize; font-weight: 600; font-size: 0.9rem; }
+.link-row input[type="text"] {
+  padding: 8px 10px; border: 1px solid var(--input-border, #d1d5db); border-radius: 8px;
+}
+.toggle { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; }
+
+.theme-grid { display: flex; gap: 24px; margin-bottom: 16px; flex-wrap: wrap; }
+.color-field { display: flex; flex-direction: column; gap: 6px; align-items: center; }
+.color-field input[type="color"] { width: 56px; height: 36px; border: none; cursor: pointer; }
+
+.btn-primary {
+  padding: 9px 18px; background: var(--primary, #2563eb); color: #fff;
+  border: none; border-radius: 8px; cursor: pointer; font-weight: 600;
+}
+.btn-secondary {
+  padding: 8px 14px; background: transparent; border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 8px; cursor: pointer;
+}
+.loading { padding: 20px; text-align: center; color: var(--text-secondary); }
