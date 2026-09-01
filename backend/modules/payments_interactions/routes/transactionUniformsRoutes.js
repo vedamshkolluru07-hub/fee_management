@@ -8,7 +8,7 @@ const {
     markReceived,
 } = require("../controllers/transactionUniformsController.js");
 const { requireSession } = require('../../../middlewares/sessionMiddleware.js');
-const attachUser = require('../../../middlewares/attachUser.js');
+const attachUser = require('../../../middlewares/attachuser.js');
 
 // Create a uniform transaction (+ uniform rows)
 router.post("", requireSession, attachUser , createTransaction);

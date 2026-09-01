@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const { requireSession } = require('../../../middlewares/sessionMiddleware.js');
-const attachUser = require('../../../middlewares/attachUser.js');
+const attachUser = require('../../../middlewares/attachuser.js');
 const controller = require('../controllers/create.controller.js');
 
 router.post(

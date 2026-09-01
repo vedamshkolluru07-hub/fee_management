@@ -6,7 +6,7 @@ const router = express.Router();
 const authController = require('../controllers/authcontroller.js');
 const { requireSession } = require('../../../middlewares/sessionMiddleware.js');
 const loginAlertMiddleware = require('../../../middlewares/loginAlertMiddleware.js');
-const attachUser = require('../../../middlewares/attachUser.js');
+const attachUser = require('../../../middlewares/attachuser.js');
 const { requireUserManagement } = require('../../../middlewares/roleMiddleware.js');
 
 /**

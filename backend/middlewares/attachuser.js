@@ -1,4 +1,4 @@
-// middlewares/attachUser.js
+// middlewares/attachuser.js
 
 const userRepository = require('../modules/user_management/repositories/userRepository.js');
 

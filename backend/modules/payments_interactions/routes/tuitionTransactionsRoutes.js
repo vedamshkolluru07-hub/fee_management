@@ -7,7 +7,7 @@ const {
     getByPaymentId,
 } = require("../controllers/tuitionTransactionsController.js");
 const { requireSession } = require('../../../middlewares/sessionMiddleware.js');
-const attachUser = require('../../../middlewares/attachUser.js');
+const attachUser = require('../../../middlewares/attachuser.js');
 
 // Create
 router.post("/", requireSession, attachUser , createTransaction);

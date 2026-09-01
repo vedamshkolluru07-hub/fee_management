@@ -8,7 +8,7 @@ const {
     markReceived,
 } = require("../controllers/transactionBooksController.js");
 const { requireSession } = require('../../../middlewares/sessionMiddleware.js');
-const attachUser = require('../../../middlewares/attachUser.js');
+const attachUser = require('../../../middlewares/attachuser.js');
 
 // Create a books transaction (+ book rows)
 router.post("/", requireSession, attachUser , createTransaction);

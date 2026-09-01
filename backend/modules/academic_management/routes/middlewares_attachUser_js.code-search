@@ -1,0 +1,135 @@
+# Query: middlewares/attachUser.js
+# Flags: RegExp
+# ContextLines: 1
+
+26 results - 26 files
+
+backend/middlewares/attachuser.js:
+  1: // middlewares/attachuser.js
+  2  
+
+backend/modules/academic_management/routes/cascadeDelete.routes.js:
+
+  4  const { requireSession } = require('../../../middlewares/sessionMiddleware.js');
+  5: const attachUser = require('../../../middlewares/attachuser.js');
+  6  const {
+
+backend/modules/academic_management/routes/createRoutes.js:
+  4  const { requireSession } = require('../../../middlewares/sessionMiddleware.js');
+  5: const attachUser = require('../../../middlewares/attachuser.js');
+  6  const controller = require('../controllers/create.controller.js');
+
+backend/modules/academic_management/routes/updateRoutes.js:
+  4  const { requireSession } = require('../../../middlewares/sessionMiddleware.js');
+  5: const attachUser = require('../../../middlewares/attachuser.js');
+  6  const academicUpdateController = require('../controllers/updateController.js');
+
+backend/modules/calander_management/routes/calendarRoutes.js:
+  5  const { requireSession } = require('../../../middlewares/sessionMiddleware.js');
+  6: const attachUser = require('../../../middlewares/attachuser.js');
+  7  const calendarController = require('../controllers/calendarController.js');
+
+backend/modules/calander_management/routes/postponementRoutes.js:
+  5  const { requireSession } = require('../../../middlewares/sessionMiddleware.js');
+  6: const attachUser = require('../../../middlewares/attachuser.js');
+  7  const postponementController = require('../controllers/postponementController.js');
+
+backend/modules/payments_interactions/routes/promoteRoutes.js:
+  3  const { requireSession } = require('../../../middlewares/sessionMiddleware.js');
+  4: const attachUser = require('../../../middlewares/attachuser.js');
+  5  const { promoteStudentsController } = require('../controllers/promoteController.js');
+
+backend/modules/payments_interactions/routes/studentClassRoutes.js:
+  3  const { requireSession } = require('../../../middlewares/sessionMiddleware.js');
+  4: const attachUser = require('../../../middlewares/attachuser.js');
+  5  const studentClassesController = require("../controllers/studentClassController.js");
+
+backend/modules/payments_interactions/routes/transactionBooksRoutes.js:
+  10  const { requireSession } = require('../../../middlewares/sessionMiddleware.js');
+  11: const attachUser = require('../../../middlewares/attachuser.js');
+  12  
+
+backend/modules/payments_interactions/routes/transactionUniformsRoutes.js:
+  10  const { requireSession } = require('../../../middlewares/sessionMiddleware.js');
+  11: const attachUser = require('../../../middlewares/attachuser.js');
+  12  
+
+backend/modules/payments_interactions/routes/tuitionTransactionsRoutes.js:
+   9  const { requireSession } = require('../../../middlewares/sessionMiddleware.js');
+  10: const attachUser = require('../../../middlewares/attachuser.js');
+  11  
+
+backend/modules/student_management/routes/bulkStudentRoutes.js:
+  6  const { requireSession } = require("../../../middlewares/sessionMiddleware.js");
+  7: const attachUser = require("../../../middlewares/attachuser.js");
+  8  
+
+backend/modules/student_management/routes/deleteStudentRoutes.js:
+  5  const { requireSession } = require("../../../middlewares/sessionMiddleware.js");
+  6: const attachUser = require("../../../middlewares/attachuser.js");
+  7  
+
+backend/modules/student_management/routes/studentEnrollmentRoutes.js:
+  6  const { requireSession } = require("../../../middlewares/sessionMiddleware.js");
+  7: const attachUser = require("../../../middlewares/attachuser.js");
+  8  
+
+backend/modules/student_management/routes/studentRoutes.js:
+  4  const { requireSession } = require("../../../middlewares/sessionMiddleware.js");
+  5: const attachUser = require("../../../middlewares/attachuser.js");
+  6  
+
+backend/modules/user_management/routes/authRoutes.js:
+  8  const loginAlertMiddleware = require('../../../middlewares/loginAlertMiddleware.js');
+  9: const attachUser = require('../../../middlewares/attachuser.js');
+  10  const { requireUserManagement } = require('../../../middlewares/roleMiddleware.js');
+
+backend/modules/user_management/routes/deviceSessionRoutes.js:
+  11  const { requireSession } = require('../../../middlewares/sessionMiddleware.js');
+  12: const attachUser = require('../../../middlewares/attachuser.js');
+  13  
+
+backend/modules/user_management/routes/notificationsRoutes.js:
+  4  const router = express.Router();
+  5: const attachUser = require('../../../middlewares/attachuser.js');
+  6  const notificationsController = require('../controllers/notificationsController.js');
+
+backend/modules/user_management/routes/userRoutes.js:
+  5  const { requireSession } = require('../../../middlewares/sessionMiddleware.js');
+  6: const attachUser = require('../../../middlewares/attachuser.js');
+  7  const { requireRole, requireUserManagement } = require('../../../middlewares/roleMiddleware.js');
+
+backend/modules/website_management/routes/aboutBlocksRoutes.js:
+  6  const { requireSession } = require('../../../middlewares/sessionMiddleware.js');
+  7: const attachUser = require('../../../middlewares/attachuser.js');
+  8  const { requireRole } = require('../../../middlewares/roleMiddleware.js');
+
+backend/modules/website_management/routes/connectLinksRoutes.js:
+  6  const { requireSession } = require('../../../middlewares/sessionMiddleware.js');
+  7: const attachUser = require('../../../middlewares/attachuser.js');
+  8  const { requireRole } = require('../../../middlewares/roleMiddleware.js');
+
+backend/modules/website_management/routes/enquiryRoutes.js:
+   9  const { requireSession } = require('../../../middlewares/sessionMiddleware.js');
+  10: const attachUser = require('../../../middlewares/attachuser.js');
+  11  const { requireRole } = require('../../../middlewares/roleMiddleware.js');
+
+backend/modules/website_management/routes/enquiryTypeRoutes.js:
+  6  const { requireSession } = require('../../../middlewares/sessionMiddleware.js');
+  7: const attachUser = require('../../../middlewares/attachuser.js');
+  8  const { requireRole } = require('../../../middlewares/roleMiddleware.js');
+
+backend/modules/website_management/routes/homeBlocksRoutes.js:
+  6  const { requireSession } = require('../../../middlewares/sessionMiddleware.js');
+  7: const attachUser = require('../../../middlewares/attachuser.js');
+  8  const { requireRole } = require('../../../middlewares/roleMiddleware.js');
+
+backend/modules/website_management/routes/siteThemeRoutes.js:
+  6  const { requireSession } = require('../../../middlewares/sessionMiddleware.js');
+  7: const attachUser = require('../../../middlewares/attachuser.js');
+  8  const { requireRole } = require('../../../middlewares/roleMiddleware.js');
+
+backend/modules/website_management/routes/uploadRoutes.js:
+  6  const { requireSession } = require('../../../middlewares/sessionMiddleware.js');
+  7: const attachUser = require('../../../middlewares/attachuser.js');
+  8  const { requireRole } = require('../../../middlewares/roleMiddleware.js');
