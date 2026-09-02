@@ -3,7 +3,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment.development';
+import { environment } from '../../../../environments/environment';
 import { ApiResponse, ConnectLinkAdmin, ConnectPlatform, SiteTheme } from '../../../core/services/website';
 
 @Injectable({ providedIn: 'root' })
