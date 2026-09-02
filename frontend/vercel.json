@@ -1,0 +1,17 @@
+{
+  "services": {
+    "frontend": {
+      "root": "frontend",
+      "framework": "angular"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": {
+        "type": "service",
+        "service": "frontend"
+      }
+    }
+  ]
+}
