@@ -1,6 +1,6 @@
 const pool = require("../../../config/db.js");
 const StudentRepository = require("../repositories/studentRepository");
-const ParentRepository = require("../repositories/ParentRepository");
+const ParentRepository = require("../repositories/parentRepository");
 const ParentStudentRepository = require("../repositories/ParentStudentRepository");
 const {
     createAuditLogService
