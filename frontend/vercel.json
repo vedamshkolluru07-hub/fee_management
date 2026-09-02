@@ -2,7 +2,9 @@
   "services": {
     "frontend": {
       "root": "frontend",
-      "framework": "angular"
+      "framework": "angular",
+      "installCommand": "npm install",
+      "buildCommand": "npx ng build"
     }
   },
   "rewrites": [
