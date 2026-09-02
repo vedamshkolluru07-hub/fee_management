@@ -2,7 +2,7 @@ const pool = require("../../../config/db.js");
 
 const StudentRepository = require("../repositories/studentRepository");
 const ParentRepository = require("../repositories/parentRepository");
-const ParentStudentRepository = require("../repositories/ParentStudentRepository");
+const ParentStudentRepository = require("../repositories/parentStudentRepository");
 
 const studentClassesRepo = require("../../payments_interactions/repositories/studentClassRepository.js");
 const tuitionTransactionsService = require("../../payments_interactions/services/tuitionTransactionsService.js");
