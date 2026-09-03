@@ -20,6 +20,7 @@ router.patch(
 // ======================================================
 router.get(
   '/events/:event_id/postponement-history',
+  requireSession, attachUser,
   postponementController.getPostponementHistory
 );
 
@@ -28,6 +29,7 @@ router.get(
 // ======================================================
 router.delete(
   '/postponement/cleanup',
+  requireSession, attachUser,
   postponementController.cleanupOldReschedules
 );
 

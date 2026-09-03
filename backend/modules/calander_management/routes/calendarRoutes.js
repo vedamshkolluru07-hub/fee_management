@@ -14,27 +14,27 @@ router.post('/events', requireSession, attachUser , calendarController.createEve
 // ======================================================
 // GET EVENTS (FILTERED)
 // ======================================================
-router.get('/events', calendarController.getEvents);
+router.get('/events', requireSession, attachUser, calendarController.getEvents);
 
 // ======================================================
 // GET UPCOMING 15 DAYS EVENTS
 // ======================================================
-router.get('/events/upcoming-15-days', calendarController.getUpcoming15DayEvents);
+router.get('/events/upcoming-15-days', requireSession, attachUser, calendarController.getUpcoming15DayEvents);
 
 // ======================================================
 // GET LOGIN ALERT EVENTS (NEXT 24 HOURS)
 // ======================================================
-router.get('/events/login-alerts', calendarController.getLoginAlertEvents);
+router.get('/events/login-alerts', requireSession, attachUser, calendarController.getLoginAlertEvents);
 
 // ======================================================
 // GET RECENT COMPLETED EVENT
 // ======================================================
-router.get('/events/recent-completed', calendarController.getRecentCompletedEvent);
+router.get('/events/recent-completed', requireSession, attachUser, calendarController.getRecentCompletedEvent);
 
 // ======================================================
 // GET EVENT BY ID
 // ======================================================
-router.get('/events/:event_id', calendarController.getEventById);
+router.get('/events/:event_id', requireSession, attachUser, calendarController.getEventById);
 
 // ======================================================
 // UPDATE EVENT

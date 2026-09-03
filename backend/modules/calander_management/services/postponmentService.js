@@ -3,7 +3,9 @@
 const db = require('../../../utils/db');
 const calendarRepository = require('../repositories/calanderRepository.js');
 const { generateCalendarReminders } = require('./calendarReminderService');
-
+const {
+  createAuditLogService
+} = require('../../user_management/services/auditLogServiceCreate.js');
 // ================= VALIDATION =================
 const isValidId = (id) => id !== undefined && id !== null;
 const isValidString = (val) => typeof val === 'string' && val.trim().length > 0;

@@ -55,12 +55,12 @@ const calendarService = {
         };
       }
 
-      const { title, start_time } = data;
+     const { title, start_time, academic_year_id } = data;
 
-      if (!title?.trim() || !start_time) {
+      if (!title?.trim() || !start_time || !academic_year_id) {
         return {
           success: false,
-          message: 'title and start_time are required',
+          message: 'title, start_time and academic_year_id are required',
         };
       }
 
@@ -134,7 +134,7 @@ const calendarService = {
   async getEvents(filters = {}) {
     try {
       return await calendarRepository.getEvents({
-        role: filters.role || 'user',
+        role: filters.role === 'admin' ? 'admin' : 'user',
         include_postponed: filters.include_postponed ?? true,
         fromDate: filters.fromDate,
         toDate: filters.toDate,

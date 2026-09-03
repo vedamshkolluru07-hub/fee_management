@@ -27,6 +27,7 @@ const calendarRepository = {
   // CREATE EVENT
   // ======================================================
   async createEvent({
+    academic_year_id,
     title,
     description,
     start_time,
@@ -43,6 +44,7 @@ const calendarRepository = {
   }) {
     const sql = `
       INSERT INTO calendar (
+        academic_year_id,
         title,
         description,
         start_time,
@@ -58,14 +60,15 @@ const calendarRepository = {
         created_by
       )
       VALUES (
-        $1,$2,$3,$4,$5,
-        $6::jsonb,
-        $7,$8,$9,$10,$11,$12,$13
+        $1,$2,$3,$4,$5,$6,
+        $7::jsonb,
+        $8,$9,$10,$11,$12,$13,$14
       )
       RETURNING *;
     `;
 
     const params = [
+      academic_year_id,
       title,
       description,
       start_time,
@@ -79,6 +82,7 @@ const calendarRepository = {
       is_postponed,
       postponed_from,
       created_by,
+
     ];
 
     const event = await db.get(sql, params);

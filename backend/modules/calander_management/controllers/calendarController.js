@@ -40,7 +40,8 @@ exports.createEvent = async (req, res) => {
 // ======================================================
 exports.getEvents = async (req, res) => {
   try {
-    const result = await calendarService.getEvents(req.query);
+    const role = req.user?.role || 'user';
+    const result = await calendarService.getEvents({ ...req.query, role });
 
     return res.status(result?.success ? 200 : 400).json(result);
 
@@ -124,7 +125,8 @@ exports.getRecentCompletedEvent = async (req, res) => {
   try {
     const result = await calendarService.getRecentCompletedEvent();
 
-    return res.status(result?.success ? 200 : 400).json(result);
+    // "no completed event yet" is not an error — always 200
+    return res.status(200).json(result);
 
   } catch (error) {
     console.error('[Controller recentCompleted Error]:', error);

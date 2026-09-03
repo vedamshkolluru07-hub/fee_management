@@ -29,10 +29,10 @@
           class="calendar-select"
           aria-label="Academic year"
           [value]="selectedAcademicYear"
-          (change)="onYearChange($any($event.target).value)"
+          (change)="onAcademicYearChange($any($event.target).value)"
         >
-          <option *ngFor="let y of academicYears; trackBy: trackByYear" [value]="y">
-            Academic {{ y }} - {{ y + 1 }}
+          <option *ngFor="let y of academicYears; trackBy: trackByYear" [value]="y.academicYearId">
+            {{ y.yearLabel }}
           </option>
         </select>
       </div>
@@ -136,6 +136,15 @@
           <textarea class="field-input" name="description" rows="3" [(ngModel)]="eventForm.description" placeholder="Add details"></textarea>
         </label>
 
+        <label class="field">
+          <span class="field-label">Academic year</span>
+          <select class="field-input" name="academic_year_id" [(ngModel)]="eventForm.academic_year_id" required>
+            <option *ngFor="let y of academicYears; trackBy: trackByYear" [value]="y.academicYearId">
+              {{ y.yearLabel }}
+            </option>
+          </select>
+        </label>
+
         <div class="field-row">
           <label class="field">
             <span class="field-label">Starts</span>
@@ -150,7 +159,7 @@
 
         <div class="modal-actions">
           <button class="ghost-btn" type="button" (click)="closeEventModal()">Cancel</button>
-          <button class="primary-btn" type="submit" [disabled]="savingEvent">
+          <button class="primary-btn" type="submit" [disabled]="savingEvent || !eventForm.academic_year_id">
             {{ savingEvent ? 'Saving…' : (modalMode === 'edit' ? 'Save changes' : 'Create event') }}
           </button>
         </div>

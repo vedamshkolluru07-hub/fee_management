@@ -13,6 +13,8 @@ import { Subject, takeUntil } from 'rxjs';
 
 import { CalendarApiService } from '../services/calander';
 import { SocketService, CalendarReminder } from '../services/socket';
+import { AcademicState } from '../../header/academic-state';
+import { AcademicYear } from '../../header/services/academic-read';
 
 @Component({
   selector: 'app-calendar',
@@ -55,7 +57,9 @@ export class CalendarComponent implements OnInit, OnDestroy {
   selectedMonth = this.currentDate.getMonth();
   selectedDay = this.currentDate.getDate();
 
-  selectedAcademicYear = this.selectedYear;
+  // Selected academic_year_id (the real FK value sent to the backend,
+  // NOT a calendar year number)
+  selectedAcademicYear: number | null = null;
 
   // ======================================================
   // STATIC DATA
@@ -67,7 +71,9 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   weekdays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
-  academicYears: number[] = [];
+  // Real academic year records loaded from the backend
+  // ({ academicYearId, yearLabel, startDate, endDate, isCurrentYear, ... })
+  academicYears: AcademicYear[] = [];
 
   // ======================================================
   // CALENDAR DATA
@@ -99,11 +105,12 @@ export class CalendarComponent implements OnInit, OnDestroy {
   showEventModal = false;
   modalMode: 'create' | 'edit' = 'create';
   editingEventId: number | null = null;
-  eventForm: { title: string; description: string; start_time: string; end_time: string } = {
+  eventForm: { title: string; description: string; start_time: string; end_time: string; academic_year_id: number | null } = {
     title: '',
     description: '',
     start_time: '',
-    end_time: ''
+    end_time: '',
+    academic_year_id: null
   };
   savingEvent = false;
 
@@ -128,6 +135,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   // ======================================================
   constructor(private calendarApi: CalendarApiService,
     private socketService: SocketService,
+    private academicState: AcademicState,
     private router: Router,
     private cdr: ChangeDetectorRef) {}
 
@@ -144,8 +152,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.selectedYear = now.getFullYear();
     this.selectedMonth = now.getMonth();
     this.selectedDay = now.getDate();
-
-    this.selectedAcademicYear = this.selectedYear;
 
     this.initAcademicYears();
     this.socketSubscribe();
@@ -171,18 +177,32 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   // ======================================================
-  // ACADEMIC YEARS
+  // ACADEMIC YEARS (real records from academic_management)
   // ======================================================
   initAcademicYears(): void {
 
-    const year = new Date().getFullYear();
+    // Use cached snapshot if AcademicState already has data (e.g. loaded by header)
+    const cached = this.academicState.academicYearsSnapshot;
 
-    this.academicYears = [
-      year - 1,
-      year,
-      year + 1,
-      year + 2
-    ];
+    if (cached.length) {
+      this.applyAcademicYears(cached);
+    }
+
+    this.academicState.loadAcademicYears()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => this.applyAcademicYears(this.academicState.academicYearsSnapshot),
+        error: () => {}
+      });
+  }
+
+  private applyAcademicYears(years: AcademicYear[]): void {
+    this.academicYears = years;
+
+    if (!this.selectedAcademicYear && years.length) {
+      const current = years.find(y => y.isCurrentYear) || years[0];
+      this.selectedAcademicYear = current.academicYearId;
+    }
   }
 
   // ======================================================
@@ -193,11 +213,16 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   // ======================================================
-  // YEAR CHANGE
+  // ACADEMIC YEAR CHANGE (dropdown emits the real academic_year_id)
   // ======================================================
-  onYearChange(year: number | string): void {
-    this.selectedYear = Number(year);
-    this.selectedAcademicYear = Number(year);
+  onAcademicYearChange(academicYearId: number | string): void {
+    this.selectedAcademicYear = Number(academicYearId);
+
+    const match = this.academicYears.find(y => y.academicYearId === this.selectedAcademicYear);
+    if (match?.startDate) {
+      this.selectedYear = new Date(match.startDate).getFullYear();
+    }
+
     this.refreshCalendar();
   }
 
@@ -565,8 +590,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
   // ======================================================
   // TRACK BY FUNCTIONS (FIX NG ERRORS)
   // ======================================================
-  trackByYear(index: number, item: number): number {
-    return item;
+  trackByYear(index: number, item: AcademicYear): number {
+    return item.academicYearId;
   }
 
   trackByDate(index: number, item: any): string {
@@ -612,7 +637,13 @@ export class CalendarComponent implements OnInit, OnDestroy {
   createNewEvent(): void {
     this.modalMode = 'create';
     this.editingEventId = null;
-    this.eventForm = { title: '', description: '', start_time: '', end_time: '' };
+    this.eventForm = {
+      title: '',
+      description: '',
+      start_time: '',
+      end_time: '',
+      academic_year_id: this.selectedAcademicYear
+    };
     this.showEventModal = true;
   }
 
@@ -625,7 +656,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
       title: event.title || '',
       description: event.description || '',
       start_time: event.start_time ? this.toDateTimeLocal(event.start_time) : '',
-      end_time: event.end_time ? this.toDateTimeLocal(event.end_time) : ''
+      end_time: event.end_time ? this.toDateTimeLocal(event.end_time) : '',
+      academic_year_id: event.academic_year_id ?? this.selectedAcademicYear
     };
     this.showEventModal = true;
   }
@@ -642,7 +674,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   submitEventForm(): void {
-    if (!this.eventForm.title || !this.eventForm.start_time) return;
+    if (!this.eventForm.title || !this.eventForm.start_time || !this.eventForm.academic_year_id) return;
 
     this.savingEvent = true;
 
@@ -650,7 +682,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
       title: this.eventForm.title,
       description: this.eventForm.description,
       start_time: new Date(this.eventForm.start_time).toISOString(),
-      end_time: this.eventForm.end_time ? new Date(this.eventForm.end_time).toISOString() : undefined
+      end_time: this.eventForm.end_time ? new Date(this.eventForm.end_time).toISOString() : undefined,
+      academic_year_id: this.eventForm.academic_year_id
     };
 
     const request$ = this.modalMode === 'edit' && this.editingEventId

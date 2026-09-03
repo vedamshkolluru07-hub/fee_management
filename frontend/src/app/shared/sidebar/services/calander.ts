@@ -12,7 +12,7 @@ export interface ApiResponse<T> {
   providedIn: 'root',
 })
 export class CalendarApiService {
-  private baseUrl = '/api'; // adjust to your backend URL
+  private baseUrl = '/calendar'; // adjust to your backend URL
 
   constructor(private http: HttpClient) {}
 
